@@ -67,7 +67,7 @@ function AgentFormDialog() {
                   <Label htmlFor="name" className="text-right">
                     Agency
                   </Label>
-                  <Input id="agency" value="Private" className="col-span-3" {...register('agency', {required: true})}/>
+                  <Input id="agency" placeholder="Private" className="col-span-3" {...register('agency', {required: true})}/>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
@@ -75,7 +75,7 @@ function AgentFormDialog() {
                   </Label>
                   <Input
                     id="years_of_experience"
-                    value="4"
+                    placeholder="4"
                     className="col-span-3"
                     {...register('years_of_experience', {required: true})}
                   />

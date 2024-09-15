@@ -66,8 +66,9 @@ export const useAuthStore = create((set) => ({
     }
   },
 
+
   async fetchProfile() {
-    const profile = JSON.parse(localStorage.getItem('profile'));
+    const profile = JSON.parse(localStorage.getItem('profile')) ?? null;
     if (profile) {
       set({ profile });
     } else {

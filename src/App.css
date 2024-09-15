@@ -8,6 +8,6 @@
   text-align: center;
 }
 
-.onboarding {
-  height: calc(100vh - 172px);
+.onboarding, .page{
+  min-height: calc(100vh - 172px);
 }

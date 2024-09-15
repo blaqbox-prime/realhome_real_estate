@@ -99,6 +99,7 @@ function Dashboard() {
       }
 
       {/* List Properties */}
+     {agent && <section>
       <SectionTitle
         title={"My Properties"}
         buttonText="Manage"
@@ -106,6 +107,7 @@ function Dashboard() {
         onButtonClick={()=>{navigate('/dashboard/manage-properties')}}
       />
       <PropertiesCarousel properties={listings} />
+     </section>}
 
       {/* Favourited Properties */}
       <SectionTitle

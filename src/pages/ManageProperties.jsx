@@ -27,7 +27,7 @@ function ManageProperties() {
       const { data, error } = await supabase
         .from("properties")
         .select()
-        .eq('agent_id', agent.id)
+        .eq('agent_id', agent?.id)
         error ? console.error(error) : console.log(data);
 
         data && setProperties(data) 

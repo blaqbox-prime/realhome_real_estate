@@ -53,7 +53,9 @@ const AboutUs = () => {
             Results-Driven
           </p>
         </div>
+        <Link to="/properties">
         <Button>Explore Properties</Button>
+        </Link>
       </div>
     </section>
   );

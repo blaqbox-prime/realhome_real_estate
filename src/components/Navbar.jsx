@@ -68,7 +68,7 @@ const Navbar = () => {
                   <Link to="agents">Our Agents</Link>
                 </li>
                 <li className="hover:text-gray-400 transition-colors duration-150">
-                  <Link to="contact">Contact Us</Link>
+                  <Link to="contact-us">Contact Us</Link>
                 </li>
               </ul>
 
@@ -114,7 +114,7 @@ const Navbar = () => {
           <Link to="agents">Our Agents</Link>
         </li>
         <li className="hover:text-gray-400 transition-colors duration-150">
-          <Link to="contact">Contact Us</Link>
+          <Link to="contact-us">Contact Us</Link>
         </li>
       </ul>
 
@@ -122,7 +122,7 @@ const Navbar = () => {
         {profile && (
           <Link to={"/dashboard"}>
             <Avatar>
-              <AvatarImage src={profile.profile_picture} />
+              <AvatarImage src={profile.profile_picture}  className="object-cover"/>
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </Link>

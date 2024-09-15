@@ -17,6 +17,10 @@ import Dashboard from './pages/Dashboard';
 import ManageProperties from './pages/ManageProperties';
 import ConfirmSignUp from './pages/ConfirmSignUp';
 import Onboarding from './pages/Onboarding';
+import ContactUs from './pages/ContactUs';
+import { useEffect } from 'react';
+import { useAuthStore } from './zustand/store';
+import supabase from './lib/supabase';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />
+      },
+      {
+        path: "/contact-us",
+        element: <ContactUs />
       },
 
       {
@@ -77,6 +85,25 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+
+  const fetchAgent = useAuthStore((state) => state.fetchAgent)
+  const fetchProfile = useAuthStore((state) => state.fetchProfile)
+  const fetchUser = useAuthStore((state) => state.fetchUser)
+  useEffect(() => {
+    const fetchAuth = async () => {
+      const {session} = await supabase.auth.getSession()
+
+      if(session){
+        fetchUser()
+        fetchProfile()
+        fetchAgent()
+      }
+    } 
+    
+  
+  }, [])
+  
+
   return (
   <RouterProvider router={router}/>
   )

@@ -181,7 +181,7 @@ function NewPropertyFormDialog() {
                 id="price"
                 type="number"
                 min="0"
-                max="999999.99"
+                max="9999999999.99"
                 className=""
                 placeholder="0"
                 {...register("price", { required: true })}

@@ -30,7 +30,7 @@ const Home = () => {
         imageStyle="h-[450px]"
         className="mb-8"
       >
-        <Link>
+        <Link to={'/agents'}>
           <Button>Find An Agent</Button>
         </Link>
       </Banner>
