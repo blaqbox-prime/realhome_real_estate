@@ -36,9 +36,9 @@ const HomeHeader = () => {
 
       {/* Homepage Filters */}
       {/* Mobile */}
-      <Drawer>
+      <Drawer >
         <DrawerTrigger className="m-0">
-          <Button variant='secondary'>Find Your Dream Home</Button>
+          <Button variant='secondary' className="md:hidden">Find Your Dream Home</Button>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>

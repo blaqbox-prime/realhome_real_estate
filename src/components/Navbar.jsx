@@ -43,10 +43,10 @@ const Navbar = () => {
   };
 
   return isMobile ? (
-    <Sheet>
+    <Sheet >
       <div className="flex justify-between items-center">
-        <h1 className="font-extrabold text-left line">REAL HOME</h1>
-        <SheetTrigger>
+        <Link to={'/'}><h1 className="font-extrabold text-left line cursor-pointer">REAL HOME</h1></Link>
+        <SheetTrigger >
           <RiMenu3Line size={24} />
         </SheetTrigger>
       </div>
@@ -102,7 +102,7 @@ const Navbar = () => {
     </Sheet>
   ) : (
     <nav className="navbar flex justify-between items-center">
-      <h1 className="font-extrabold text-left line">REAL HOME</h1>
+      <Link to={'/'}><h1 className="font-extrabold text-left line cursor-pointer">REAL HOME</h1></Link>
       <ul className="navbar-links flex gap-8 ">
         <li className="hover:text-gray-400 transition-colors duration-150">
           <Link>Home</Link>
