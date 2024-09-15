@@ -15,6 +15,8 @@ import Agents from './pages/Agents';
 import AgentDetails from './pages/AgentDetails';
 import Dashboard from './pages/Dashboard';
 import ManageProperties from './pages/ManageProperties';
+import ConfirmSignUp from './pages/ConfirmSignUp';
+import Onboarding from './pages/Onboarding';
 
 const router = createBrowserRouter([
   {
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />
+      },
+      {
+        path: "/confirm-signup",
+        element: <ConfirmSignUp />
+      },
+      {
+        path: "/onboarding",
+        element: <Onboarding />
       },
       {
         path: "/dashboard",

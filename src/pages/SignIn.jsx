@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import CustomInput from "../components/CustomInput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { ThreeDots } from "react-loader-spinner";
+// import { useStore } from "zustand";
+import { useAuthStore } from "@/zustand/store";
+import supabase from "@/lib/supabase";
 
 function SignIn() {
-  // Variables
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   const {
     register,
@@ -18,7 +19,55 @@ function SignIn() {
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (data) => console.log(data)
+  const [loading, setLoading] = useState(false)  
+  const setUser = useAuthStore((state) => state.setUser);
+  const setProfile = useAuthStore((state) => state.setProfile);
+  const profile = useAuthStore((state) => state.profile);
+  const fetchProfile = useAuthStore((state) => state.fetchProfile);
+  const navigate = useNavigate()
+
+  const onSubmit = async (formData) => {
+
+    setLoading(true)
+
+    const { data, error } = await supabase.auth.signInWithPassword(formData)
+
+    if(error){
+      toast.error("failed to sign in: " + error.message)
+      setLoading(false)
+      return
+    }
+
+    setUser(data.session.user)
+    console.log(data)
+
+    const user = data.user;
+
+   try {
+    const { data, error } = await supabase
+    .from('profiles')
+    .select().eq('id',user.id);
+    
+    console.log(data)
+
+    if(data.length == 0){
+      setLoading(false)
+      navigate('/onboarding')
+      return;
+    }
+    else {
+      setProfile(data[0])
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
+
+    setLoading(false)
+
+    navigate('/dashboard')
+    
+  }
 
   return (
     <div className="SignIn px-8 text-left">
@@ -57,9 +106,19 @@ function SignIn() {
              {errors.password && <span className="text-sm text-red-700 animate-in slide-in-from-top-1 duration-500">* This field is required</span>}
           </div>
           <Button
-            type="submit"       
+            type="submit" 
+            disabled={loading}      
           >
-            Sign In
+            { loading ? <ThreeDots
+  visible={true}
+  width={80}
+
+  color="#fff"
+  radius="2"
+  ariaLabel="three-dots-loading"
+  /> :
+            "Sign In"
+            }
           </Button>
           <p className="text-gray-500 text-center">
             Don't have an account?

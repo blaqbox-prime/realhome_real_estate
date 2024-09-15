@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 
 const AboutUs = () => {
   return (
-    <section className="about-us my-24 flex items-center text-left">
-      <div className="left flex-1 flex items-center gap-10">
+    <section className="about-us md:my-24 flex items-center text-left">
+      <div className="hidden left flex-1 md:flex items-center gap-10">
 
         <img src="https://images.pexels.com/photos/1080696/pexels-photo-1080696.jpeg?cs=srgb&dl=pexels-falling4utah-1080696.jpg&fm=jpg&w=640&h=960" alt="" 
         className="h-[400px] w-[200px] object-cover"

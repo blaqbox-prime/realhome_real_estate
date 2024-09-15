@@ -12,10 +12,27 @@ import { formattedNumber } from "@/lib/utils";
 import { AiOutlineEdit } from "react-icons/ai";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
+import supabase from "@/lib/supabase";
+import { toast } from "react-toastify";
 
-function PropertiesTable({ properties = [], editable=false }) {
+function PropertiesTable({ properties = [], editable=false, className='' }) {
+
+  const deleteProperty = async (id) => {
+    const response = await supabase
+  .from('properties')
+  .delete()
+  .eq('id', id)
+
+  if(response.status == 204){
+    toast.success(`Property ${id} deleted successfully`)
+  }else {
+    toast.error(`Property ${id} could not be deleted`)
+    
+  }
+  }
+
   return (
-    <div>
+    <div className={`${className}`}>
       {properties.length == 0 ? (
         <p className="text-center italic">No data available</p>
       ) : (
@@ -37,15 +54,15 @@ function PropertiesTable({ properties = [], editable=false }) {
           <TableBody>
             {properties.map((property) => (
               <TableRow>
-                <TableCell className="font-medium">{property.id}</TableCell>
-                <TableCell>{property.title}</TableCell>
-                <TableCell>{property.description}</TableCell>
+                <TableCell className="font-medium line-clamp-1">{property.id}</TableCell>
+                <TableCell className="">{property.title}</TableCell>
+                <TableCell >{property.description}</TableCell>
                 <TableCell>{property.type}</TableCell>
                 <TableCell>{property.city}</TableCell>
-                <TableCell className="text-right">R{formattedNumber(property.price)}</TableCell>
+                <TableCell className="text-right w-32">R{formattedNumber(property.price)}</TableCell>
                 
-                { editable == true && <TableCell> <FaRegEdit className="scale-125 cursor-pointer" /> </TableCell> }
-                { editable == true && <TableCell> <RiDeleteBack2Fill className="text-red-700 scale-125 cursor-pointer"/> </TableCell> }
+                { editable == true && <TableCell> <FaRegEdit className="scale-125 cursor-pointer" onClick={() => {}} /> </TableCell> }
+                { editable == true && <TableCell> <RiDeleteBack2Fill className="text-red-700 scale-125 cursor-pointer" onClick={() => {deleteProperty(property.id)}} /> </TableCell> }
               
               </TableRow>
             ))}

@@ -6,10 +6,37 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import supabase from '@/lib/supabase'
 import { listings } from '@/lib/utils'
-import React from 'react'
+import { useAuthStore } from '@/zustand/store'
+import React, { useEffect, useState } from 'react'
 
 function ManageProperties() {
+
+  const [properties,setProperties] = useState([]) 
+  const agent = useAuthStore((state) => state.agent)
+  const fetchAgent = useAuthStore((state) => state.fetchAgent)
+  
+  useEffect(() => {
+
+    if(!agent){
+      fetchAgent()
+    }
+
+    const getProperties = async () => {
+      const { data, error } = await supabase
+        .from("properties")
+        .select()
+        .eq('agent_id', agent.id)
+        error ? console.error(error) : console.log(data);
+
+        data && setProperties(data) 
+      };
+      
+      getProperties()
+      
+    }, []);
+
   return (
     <main className='text-left'>
         <div className="heading">
@@ -33,7 +60,7 @@ function ManageProperties() {
         button={false}
         className="mt-12"
       />
-      <PropertiesTable properties={listings} editable/>
+      <PropertiesTable properties={properties} editable className='mb-6'/>
 
     </main>
   )

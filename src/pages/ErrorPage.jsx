@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useRouteError } from "react-router-dom";
 import { SiGooglehome } from "react-icons/si";
 import { PiHouseSimple } from "react-icons/pi";
+import BackToHome from "@/components/BackToHome";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -21,11 +22,7 @@ export default function ErrorPage() {
           <i>{error.statusText || error.message}</i>
         </p>
 
-        <Link to={'/'}>
-            <Button className="text-lg mt-6"> 
-                <PiHouseSimple className="mr-3"/> Go Home
-            </Button>
-        </Link>
+        <BackToHome />
 
       </div>
     </main>

@@ -4,7 +4,7 @@
     place-items: center;
     margin-top: 1rem;
     color: white;
-    background: url("https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?cs=srgb&dl=pexels-binyaminmellish-1396122.jpg&fm=jpg&w=1920&h=1280") no-repeat center;
+    background: url("/assets/home-hero.jpg") no-repeat center;
     background-size: cover;
     position: relative;
 }

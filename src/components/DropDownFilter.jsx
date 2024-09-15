@@ -52,8 +52,8 @@ const DropDownFilter = ({data, type, onChange, selectedProvince = "Any"}) => {
                     key={option}
                     value={option}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue)
-                      type == 'province' && onChange(currentValue)
+                      setValue(currentValue === value ? "" : currentValue);
+                      onChange(currentValue)
                       setOpen(false)
                     }}
                   >

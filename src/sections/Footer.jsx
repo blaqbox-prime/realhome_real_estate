@@ -5,7 +5,7 @@ const Footer = () => {
 
   return (
 <>
-    <footer className={`mt-24 grid md:grid-cols-4 grid-cols-2  gap-8 justify-between text-left`}>
+    <footer className={` grid md:grid-cols-4 grid-cols-2  gap-8 justify-between text-left`}>
       {/* BRANDING ------------------------------------------------------- */}
       <div className="Branding">
         <h1 className="font-extrabold text-left line mb-4">

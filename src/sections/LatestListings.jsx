@@ -15,8 +15,8 @@ import SectionTitle from "@/components/SectionTitle";
 
 const LatestListings = ({listings}) => {
   return (
-    <section className="text-left my-16">
-      <SectionTitle title={"Latest Properties"} />
+    <section className="text-left md:my-16 my-8">
+      <SectionTitle title={"Latest Properties"} onButtonClick={() => navigate('/properties')}/>
       {/* Carousel of Listings */}
       <Carousel>
         <CarouselContent className="-mr-4">
@@ -27,8 +27,8 @@ const LatestListings = ({listings}) => {
           </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="hidden md:flex ml-2"/>
+        <CarouselNext className="hidden md:flex mr-2"/>
       </Carousel>
     </section>
   );

@@ -17,7 +17,7 @@ useEffect(() => {
         setLoading(true)
         const {data, error} = await supabase
         .from("agents")
-        .select()
+        .select('*, profiles(*)')
         .eq('id', `${id}`)
 
         error && console.log(error)
@@ -42,37 +42,31 @@ function handleSubmit(e){
 
 
 
-  return loading ? (<Circles
-    height="80"
-    width="80"
-    color="#4fa94d"
-    ariaLabel="circles-loading"
-    wrapperStyle={{}}
-    wrapperClass=""
-    visible={true}
-    />) : (
-    <div>
-        <div className="avatar flex items-center gap-4 ">
-            {/* Agent Title Bar */}
-            <Avatar className="aspect-square h-20 w-20">
-                <AvatarImage src={agent?.profile_picture}/>
-            <AvatarFallback>{`${agent.first_name[0]}${agent.last_name[0]}`}</AvatarFallback>
+  return loading ? (
+    <Circles
+      height="80"
+      width="80"
+      color="#4fa94d"
+      ariaLabel="circles-loading"
+      wrapperStyle={{}}
+      wrapperClass=""
+      visible={true}
+    />
+  ) : (
+    <div className='bg-gray-100 rounded-lg p-3 cursor-pointer'>
+      <div className="avatar flex items-center sm:flex-row flex-col gap-4">
+        {/* Agent Title Bar */}
+        <Avatar className="aspect-square md:h-24 md:w-24 h-16 w-16">
+          <AvatarImage src={agent?.profiles?.profile_picture} />
+          <AvatarFallback>{`${agent?.profiles?.first_name[0]}${agent?.profiles?.last_name[0]}`}</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col gap-2">
-           <h3 className="font-bold text-xl">{`${agent.first_name} ${agent.last_name}`}</h3>
-           <p>{agent.agency}</p> 
+        <div className="flex flex-col gap-1 text-center sm:text-left">
+          <h3 className="font-bold text-base md:text-xl">{`${agent?.profiles?.first_name} ${agent?.profiles?.last_name}`}</h3>
+          <p className='text-xs md:text-base'>{agent.agency}</p>
         </div>
-        </div>
-
-        {/* Contact */}
-
-        <h3 className="font-bold uppercase my-4">Contact Agent Today</h3>
-        
-
-
-
+      </div>
     </div>
-  )
+  );
 }
 
 export default AgentCard

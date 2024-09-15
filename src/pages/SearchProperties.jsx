@@ -4,12 +4,14 @@ import SectionTitle from "@/components/SectionTitle";
 import supabase from "@/lib/supabase";
 import { listings } from "@/lib/utils";
 import PopularListings from "@/sections/PopularListings";
-import { usePropertiesStore } from "@/zustand/store";
+import { useFilterStore, usePropertiesStore } from "@/zustand/store";
 import { useEffect } from "react";
 
 function SearchProperties() {
 
   const setProperties = usePropertiesStore((state) => state.setProperties) 
+  
+  
 
   useEffect(() => {
     const getProperties = async () => {
@@ -27,7 +29,7 @@ function SearchProperties() {
       
     }, []);
     
-
+  
   return (
     <main className="Properties">
       {/* SEARCH FILTERS */}
@@ -38,7 +40,7 @@ function SearchProperties() {
 
       <SectionTitle title={"All Properties"} button={false} className="mt-4"/>
       {/* Properties Grid View */}
-      <PropertiesGrid listings={usePropertiesStore(state => state.properties)}/>
+      <PropertiesGrid listings={usePropertiesStore((state) => state.properties)} className="mb-10"/>
     </main>
   );
 }

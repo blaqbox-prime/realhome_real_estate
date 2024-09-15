@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Textarea } from "./ui/textarea";
 import { Separator } from "./ui/separator";
 import {
@@ -22,16 +22,118 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "./ui/switch";
+import { toast } from "react-toastify";
+import { useAuthStore } from "@/zustand/store";
+import supabase from "@/lib/supabase";
+import { ThreeDots } from "react-loader-spinner";
 
 function NewPropertyFormDialog() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const [previewImages, setPreviewImages] = useState([]);
+  const [coverImgIndex, setCoverImgIndex] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const agent = useAuthStore((state) => state.agent);
+  const fetchAgent = useAuthStore((state) => state.fetchAgent);
+
+  // Fetch Agent details when page loads
+  useEffect(() => {
+    if (!agent) {
+      fetchAgent();
+    }
+  }, []);
+
+  const onSubmit = async (formdata) => {
+    setLoading(true);
+    const imagePicker = document.getElementById("imagePicker");
+    const files = imagePicker.files;
+    // upload images and get urls
+    const images = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      const { data, error } = await supabase.storage
+        .from("pictures")
+        .upload(`public/${file.name}`, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (error) {
+        toast.error(
+          `Something went wrong uploading ${file.name}: ` + error.message
+        );
+        setLoading(false);
+        return;
+      }
+
+      const imagePath = data.path;
+
+      // record the full record into the profiles table
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("pictures").getPublicUrl(imagePath);
+      //add the public url to the images array
+      images.push(publicUrl);
+    }
+
+    const recordData = { agent_id: agent.id,images: images,cover_img: images[coverImgIndex], ...formdata }
+    console.log(recordData);
+    
+    // Writ to the database
+    const {data, error} = await supabase.from('properties').insert(recordData).select()
+    if (error) {
+      toast.error('Failed to create new property')
+      console.log(error)
+      setLoading(false);
+      return;
+    } else {
+      toast.success('Property listing created successfully')
+    }
+    setLoading(false);
+  };
+
+  const handleFileSelect = (event) => {
+    const imagePicker = event.target;
+    const files = imagePicker.files;
+
+    // Clear any existing preview images
+    setPreviewImages([]);
+
+    if (!files.length) {
+      toast.info("No files selected");
+      return;
+    } // Handle no files selected gracefully
+
+    const previewImages = []; // Array to store preview URLs
+    const allowedMimeTypes = ["image/jpeg", "image/png"]; // Allowed image types
+
+    // Loop through selected files
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      // Validate file type
+      if (!allowedMimeTypes.includes(file.type)) {
+        toast.warn(`Invalid file type: ${file.name}`);
+        console.error(`Invalid file type: ${file.name}`);
+        continue; // Skip to next file if invalid type
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImages.push(e.target.result);
+        setPreviewImages(previewImages); // Update preview state after all files are processed
+      };
+      reader.readAsDataURL(file); // Read the file into a data URL for preview
+    }
+    // set the first image as the cover image
+    setCoverImgIndex(0);
   };
 
   return (
@@ -137,19 +239,23 @@ function NewPropertyFormDialog() {
 
             <div className="flex flex-col gap-4">
               <Label htmlFor="property type">Property Type</Label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue
-                    placeholder="Select a property type"
-                    {...register("property_type")}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="TownHouse">Town House</SelectItem>
-                  <SelectItem value="House">House</SelectItem>
-                  <SelectItem value="system">Apartment</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="property_type"
+                control={control}
+                defaultValue="House"
+                render={({ field }) => (
+                  <Select {...field}>
+                    <SelectTrigger className="w-full" onChange={(value) => {field.value = value}}>
+                      <SelectValue placeholder="Select a property type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TownHouse">Town House</SelectItem>
+                      <SelectItem value="House">House</SelectItem>
+                      <SelectItem value="Apartment">Apartment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </div>
             <div className="grid grid-cols-4 gap-4">
               <div className="col-span-2 flex flex-col gap-4">
@@ -199,15 +305,15 @@ function NewPropertyFormDialog() {
             <div className="grid grid-cols-3 gap-4">
               <div className="flex gap-2 items-center">
                 <Label htmlFor="garage">Garage</Label>
-                <Switch {...register("garage")} />
+                <Switch id="garage" {...register("garage", {onChange: (e) => {e.value = e.checked}})} />
               </div>
               <div className="flex gap-2 items-center">
-                <Label htmlFor="Garden">Garden</Label>
-                <Switch {...register("garden")} />
+                <Label htmlFor="garden">Garden</Label>
+                <Switch id="garden" {...register("garden", {onChange: (e) => {e.value = e.checked}})} />
               </div>
               <div className="flex gap-2 items-center">
-                <Label htmlFor="Swimming Pool">Pool</Label>
-                <Switch {...register("pool")} />
+                <Label htmlFor="swimming_pool">Pool</Label>
+                <Switch id="swimming_pool" {...register("swimming_pool", {onChange: (e) => {e.value = e.checked}})} />
               </div>
             </div>
 
@@ -221,7 +327,7 @@ function NewPropertyFormDialog() {
 
               <div class="flex items-center justify-center w-full">
                 <label
-                  for="dropzone-file"
+                  for="imagePicker"
                   class="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                 >
                   <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -248,13 +354,53 @@ function NewPropertyFormDialog() {
                       SVG, PNG, JPG or GIF (MAX. 800x400px)
                     </p>
                   </div>
-                  <input id="dropzone-file" type="file" class="hidden" />
+                  <input
+                    id="imagePicker"
+                    type="file"
+                    accept="image/png, image/jpeg, image/jpg"
+                    onChange={handleFileSelect}
+                    multiple
+                    className="hidden"
+                  />
                 </label>
               </div>
+              {/* Preview Images */}
+              {previewImages.length > 0 && (
+                <>
+                  <ul className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4">
+                    {previewImages.map((previewImage, index) => (
+                      <li key={index}>
+                        <img
+                          onClick={() => {
+                            setCoverImgIndex(index);
+                          }}
+                          src={previewImage}
+                          alt={`Uploaded image ${index + 1}`}
+                          className={`${
+                            coverImgIndex === index &&
+                            "border border-green-500 shadow-lg shadow-green-300"
+                          } object-cover object-center rounded-md shadow-sm h-48 w-full shadow-slate-400 animate-in fade-in-25 ease-in-out`}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-sm text-gray-400 italic mt-3">
+                    * Selected image will be used as the cover image
+                  </p>
+                </>
+              )}
+              {/* ------------------------------------ */}
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Create new property</Button>
+          <Button type="submit" disabled={loading}>{loading ? (<ThreeDots
+  visible={true}
+  width={80}
+
+  color="#fff"
+  radius="2"
+  ariaLabel="three-dots-loading"
+  />) : 'Create new property'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

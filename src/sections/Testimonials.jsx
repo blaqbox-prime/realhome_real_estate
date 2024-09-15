@@ -38,12 +38,12 @@ const Testimonials = () => {
         <CarouselContent className="-mr-4">
           {/* Loop Over Each Listing */}
           {testimonials.map((testimonial) => (
-            <CarouselItem key={testimonial.id} className="pr-4 basis-auto cursor-pointer">
+            <CarouselItem key={testimonial.id} className="pr-4 basis-auto cursor-pointer w-full md:w-auto ">
             <TestimonialCard testimonial={testimonial}/>
           </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselNext />
+        <CarouselNext className="hidden md:flex"/>
       </Carousel>
         
     </section>

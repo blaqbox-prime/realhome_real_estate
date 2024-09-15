@@ -1,18 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { useForm } from 'react-hook-form'
+import { useAuthStore } from '@/zustand/store'
+import { ThreeDots } from 'react-loader-spinner'
+import supabase from '@/lib/supabase'
+import { toast } from 'react-toastify'
 
 function AgentFormDialog() {
 
-    const handleSubmit = () => {
-        alert('Creating account')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const [isLoading, setLoading] = useState(false);
+  const [isFormSuccess, setFormSuccess] = useState(false);
+  const user = useAuthStore((state) => state.user);
+  const setAgent = useAuthStore((state) => state.setAgent);
+  const fetchUser = useAuthStore((state) => state.fetchUser)
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+  
+
+  const onSubmit = async (formData) => {
+    setLoading(true);
+
+    console.log(user)
+
+    const { data, error } = await supabase
+      .from("agents")
+      .upsert({ profile_id: user.id, ...formData })
+      .select();
+
+      if(error){
+        console.log(error)
+        toast.success('Failed to create agent account: ' + error.message)
+        setLoading(false);
+        return;
     }
+    setAgent(data[0])
+    toast.success('Agent created successfully 🏡')
+    setFormSuccess(true)
+    setLoading(false);
+
+  };
 
   return (
     <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit(onSubmit)}>
               <DialogHeader>
                 <DialogTitle>Become An Agent</DialogTitle>
                 <DialogDescription>
@@ -20,22 +62,12 @@ function AgentFormDialog() {
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Avatar className="mx-auto aspect-square w-24 h-24 " >
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <Input id="profile_pic" type="file">
-                </Input>
-
-              </div>
-
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
                     Agency
                   </Label>
-                  <Input id="agency" value="Private" className="col-span-3" />
+                  <Input id="agency" value="Private" className="col-span-3" {...register('agency', {required: true})}/>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
@@ -45,12 +77,22 @@ function AgentFormDialog() {
                     id="years_of_experience"
                     value="4"
                     className="col-span-3"
+                    {...register('years_of_experience', {required: true})}
                   />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit" onClick={handleSubmit} >Create Agent Account</Button>
+                <Button type="submit" disabled={isLoading || isFormSuccess} >
+                  {isLoading ?  <ThreeDots
+            visible={true}
+            width={80}
+            color="#fff"
+            radius="2"
+            ariaLabel="three-dots-loading"
+          /> : isFormSuccess ? "Agent Account Created" : "Create Agent Account"}
+                </Button>
               </DialogFooter>
+    </form>
             </DialogContent>
   )
 }

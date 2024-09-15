@@ -8,7 +8,7 @@ import { LucideBath } from 'lucide-react'
 
 function Amenities({property}) {
   return (
-    <section className="amenities-grid grid grid-cols-3 gap-1 w-[500px] ">
+    <section className="amenities-grid grid grid-cols-3 gap-4 w-full md:w-[500px] ">
             <Amenity title='Bedrooms' text={property?.bedrooms} icon={<IoBedSharp />}/>
             <Amenity title='Bathrooms' text={property?.bathrooms} icon={<LucideBath />}/>
             <Amenity title='Square Meters' text={property?.square_meters} icon={<SlSizeFullscreen />}/>
