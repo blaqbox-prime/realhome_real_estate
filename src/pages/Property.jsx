@@ -93,8 +93,8 @@ function Property() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden md:flex" />
-          <CarouselNext className="hidden md:flex" />
+          {/* <CarouselPrevious className="hidden md:flex" />
+          <CarouselNext className="hidden md:flex" /> */}
         </Carousel>
 
         {/* Property Details */}
@@ -102,19 +102,16 @@ function Property() {
         <section className="details flex flex-col gap-4 md:flex-row justify-between">
           <div className="article space-y-6 flex-1">
             {/* Title */}
-            <div className="flex items-center flex-1 justify-between mt-3 mb-2">
+            <div className="flex items-start flex-1 justify-between mt-3 mb-2">
               <h1 className="font-bold text-2xl md:text-3xl capitalize">
                 {property?.title}
               </h1>
-              <h1 className="font-bold text-2xl md:text-3xl capitalize">
+              <h1 className="font-bold text-right text-2xl md:text-3xl w-1/3 capitalize">
                 R{formattedNumber(property?.price)}
               </h1>
             </div>
             {/* Amenities */}
             <Amenities property={property}></Amenities>
-          </div>
-          <div className="article overflow-hidden mt-3">
-            <Map location={location} />
           </div>
         </section>
 
@@ -127,6 +124,11 @@ function Property() {
 
           <p className="mb-6">{property?.description}</p>
         </section>
+
+        <div className="overflow-hidden flex flex-1 h-80 my-3">
+            <Map location={location} />
+          </div>
+
       </div>
 
       {/* Agents Side Panel */}

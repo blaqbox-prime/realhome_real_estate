@@ -6,12 +6,12 @@ function Map() {
   const location = {
     lat: 37.38605,
     lng: -122.08385};
- 
+
   const [map, setMap] = useState(null);
  
  const mapRef = useCallback((mapContainer) => {
  
-    if(mapContainer == null) return;
+    if(!mapContainer) return;
  
     mapContainer.innerHTML = '';
  
@@ -31,13 +31,13 @@ function Map() {
     if(map !== null){
       map.setView([location.lat,location.lng]);
       const marker = L.marker([location.lat,location.lng],{
-        icon: L.icon({iconUrl :'/images/icon-location.svg',iconSize: [46,56]})
+        icon: L.icon({iconUrl :'/assets/icon-location.svg',iconSize: [46,56]})
       }).addTo(map)
     }
   },[map,location])
  
   return (
-    <main className="MapContainer flex flex-1 h-32 w-80" ref={mapRef}>
+    <main className="MapContainer flex flex-1 h-80 w-full" ref={mapRef}>
  
     </main>
   )
