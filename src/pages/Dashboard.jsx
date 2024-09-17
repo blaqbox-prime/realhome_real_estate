@@ -5,23 +5,18 @@ import { Button } from "@/components/ui/button";
 import { greeting, listings } from "@/lib/utils";
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import AgentFormDialog from "@/components/AgentFormDialog";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import supabase from "@/lib/supabase";
 import Banner from "@/components/Banner";
 import NewPropertyFormDialog from "@/components/NewPropertyFormDialog";
+import FavouritesTable from "@/components/FavouritesTable";
+import WishlistGrid from "@/components/WishlistGrid";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -30,6 +25,8 @@ function Dashboard() {
   const user = useAuthStore((state) => state.user)
   const agent = useAuthStore((state) => state.agent)
   const fetchAgent = useAuthStore((state) => state.fetchAgent)
+  const [favourites, setFavourites] = useState([]); 
+  const [wishlist, setWishlist] = useState([]); 
 
   useEffect( () => {
     
@@ -46,8 +43,45 @@ function Dashboard() {
     }
     fetchProfile()
     fetchAgent()
-
+    
   }, [profile])
+
+  useEffect( () => {
+    
+    const fetchFavourites = async () => {
+      const { data, error } = await supabase
+    .from('favourites')
+    .select('*, properties(*)')
+    .eq('profile_id',user.id);
+    
+    if(error){
+      console.log(error)
+    }else {
+      setFavourites(data)
+    }
+    }
+    fetchFavourites()
+  
+  }, [profile])
+
+  useEffect( () => {
+    
+    const fetchwishlist = async () => {
+      const { data, error } = await supabase
+    .from('wishlist')
+    .select('*, properties(*)')
+    .eq('profile_id',user.id);
+    
+    if(error){
+      console.log(error)
+    }else {
+      setWishlist(data)
+    }
+    }
+    fetchwishlist()
+  
+  }, [profile])
+
   
 
   return (
@@ -112,10 +146,20 @@ function Dashboard() {
       {/* Favourited Properties */}
       <SectionTitle
         title={"Favourites"}
-        buttonText="Manage"
+        // buttonText="Manage"
+        button={false}
         className="mt-12"
       />
-      <PropertiesTable properties={listings} className="mb-6"/>
+      <FavouritesTable favourites={favourites} className="mb-6" editable={user !== null} />
+      {/* <PropertiesTable properties={listings} className="mb-6" editable /> */}
+    
+      <SectionTitle
+        title={"My Wishlist"}
+        // buttonText="Manage"
+        button={false}
+        className="mt-12"
+      />
+      <WishlistGrid wishlist={wishlist} className="mb-6"/>
     </main>
   );
 }

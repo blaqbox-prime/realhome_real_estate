@@ -5,7 +5,6 @@ import React from "react";
 import { listings } from "@/lib/utils";
 import Testimonials from "@/sections/Testimonials";
 import AboutUs from "@/sections/AboutUs";
-import Footer from "@/sections/Footer";
 import EmailInput from "@/sections/EmailInput";
 import Banner from "@/components/Banner";
 import { Button } from "@/components/ui/button";

@@ -37,8 +37,8 @@ const HomeHeader = () => {
       {/* Homepage Filters */}
       {/* Mobile */}
       <Drawer >
-        <DrawerTrigger className="m-0">
-          <Button variant='secondary' className="md:hidden">Find Your Dream Home</Button>
+        <DrawerTrigger variant='secondary' className="bg-secondary text-secondary-foreground py-2 px-3 font-bold rounded-md md:hidden m-0">
+          Find Your Dream Home
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
@@ -78,7 +78,7 @@ const HomeHeader = () => {
       </Drawer>
 
       {/* Desktop */}
-      <div className="hidden md:grid homepage-filters absolute bottom-[-1.5rem] bg-white shadow-slate-300 rounded-lg shadow-md min-w-2/3 h-20 place-items-center">
+      <div className="hidden md:grid w-4/5 homepage-filters absolute bottom-[-1.5rem] bg-white shadow-slate-300 rounded-lg shadow-md min-w-2/3 h-20 place-items-center">
         <div className="wrapper flex items-center gap-4 w-full px-6">
           {/* Province */}
           <DropDownFilter

@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { FaSearch } from "react-icons/fa";
 import { useFilterStore, usePropertiesStore } from "@/zustand/store";
 import supabase from "@/lib/supabase";
+import { ThreeDots } from "react-loader-spinner";
 
 
 
@@ -26,6 +27,8 @@ function SearchFilters({ className = "" }) {
   const propertyType = useFilterStore((state) => state.propertyType);
   const minPrice = useFilterStore((state) => state.minPrice);
   const maxPrice = useFilterStore((state) => state.maxPrice);
+
+  const [loading, setLoading] = useState(false);
 
   const handleSearchClick = async () => {
     console.log({ province, city, propertyType, minPrice, maxPrice });
@@ -97,10 +100,14 @@ function SearchFilters({ className = "" }) {
         data={priceOptions}
         onChange={changeMaxPrice}
       />
+      <Button className="flex items-center gap-4" onClick={handleSearchClick} type="submit" disabled={loading}>{loading ? (<ThreeDots
+  visible={true}
+  width={80}
 
-      <Button className="flex items-center gap-4" onClick={handleSearchClick}>
-        Search <FaSearch />
-      </Button>
+  color="#fff"
+  radius="2"
+  ariaLabel="three-dots-loading"
+  />) : <>Search <FaSearch /></>}</Button>
     </div>
   );
 }

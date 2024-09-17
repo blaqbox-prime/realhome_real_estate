@@ -4,7 +4,7 @@ import SectionTitle from "@/components/SectionTitle";
 import supabase from "@/lib/supabase";
 import { listings } from "@/lib/utils";
 import PopularListings from "@/sections/PopularListings";
-import { useFilterStore, usePropertiesStore } from "@/zustand/store";
+import { usePropertiesStore } from "@/zustand/store";
 import { useEffect } from "react";
 
 function SearchProperties() {

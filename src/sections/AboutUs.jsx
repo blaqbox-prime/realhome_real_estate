@@ -6,6 +6,7 @@ import { TbPigMoney } from "react-icons/tb";
 import { GiGlassBall } from "react-icons/gi";
 import { PiNeedle } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const AboutUs = () => {
   return (
