@@ -8,6 +8,19 @@
   text-align: center;
 }
 
+body{
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
 .onboarding, .page{
   min-height: calc(100vh - 172px);
 }
+
+@media (max-width: 768px){
+  #root {
+    padding: 1.2rem;
+  }
+
+}
+
