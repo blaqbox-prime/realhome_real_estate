@@ -36,7 +36,7 @@ const HomeHeader = () => {
 
       {/* Homepage Filters */}
       {/* Mobile */}
-      <Drawer >
+      <Drawer>
         <DrawerTrigger variant='secondary' className="bg-secondary text-secondary-foreground py-2 px-3 font-bold rounded-md md:hidden m-0">
           Find Your Dream Home
         </DrawerTrigger>

@@ -18,8 +18,13 @@ body{
 }
 
 @media (max-width: 768px){
+  :root{
+    font-size: 14px;
+  }
+  
   #root {
     padding: 1.2rem;
+    
   }
 
 }
