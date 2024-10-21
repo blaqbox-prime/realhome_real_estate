@@ -119,10 +119,11 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
   };
 
   return (
-    <article className="property-card max-w-80 w-full text-left">
+    <article className="property-card max-w-80 w-full text-left animate-in">
       <Link to={`/properties/${property.id}`}>
         <div className="relative  h-[340px]  object-cover cursor-pointer">
           <img
+          loading="lazy"
             src={property.cover_img}
             alt="property"
             className=" rounded-2xl filter object-cover brightness-50 h-full w-full"

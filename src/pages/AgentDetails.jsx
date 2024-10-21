@@ -5,15 +5,62 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import supabase from "@/lib/supabase";
+import { useAuthStore } from "@/zustand/store";
+import { Send } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import {io} from 'socket.io-client'
+
 
 function AgentDetails() {
   const [agent, setAgent] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const user = useAuthStore((state) => state.user)
+  const fetchUser = useAuthStore((state) => state.fetchUser)
   const params = useParams();
+  const [socket, setSocket] = useState(null)
+
+  const messages = [
+    {sender: "Bruce",
+      message: 'A query sent',
+      id:"bc61aa43-64ef-4ba5-8a98-5e4155ec7ead"
+    },
+    {sender: "agent",
+      message: 'this is for testing'
+    }
+  ]
+
+  useEffect(() => {
+    !user && fetchUser()
+    console.log(user)
+  }, [])
+  
+  useEffect(() => {
+    setSocket(io('http://localhost:4000'))
+  }, [])
+
+  useEffect(() => {
+    if(socket){
+      socket.on("connect", (data) => {
+        console.log(data)
+        toast('socket connected. start sending data')
+      })
+
+      socket.on('message', (message) => {
+        toast.success('New Message Recieved')
+        console.log("This is from the socket: \n" + message)
+      })
+    }
+
+    return () => {
+      socket.disconnect()
+    }
+
+  }, [])
+  
+  
 
   const {
     register,
@@ -43,6 +90,23 @@ function AgentDetails() {
     }
   }, [agent]);
 
+
+  const handleAgentMessage = (e) => {
+    e.preventDefault()
+    toast('clicked')
+
+    const msg = document.getElementById('input').value;
+
+    const message = {
+      sender: user.email,
+      message: msg,
+      id: user.id
+    }
+
+    socket.emit('message', message);
+
+  }
+
   return (
     <div className="px-1 my-6 text-left">
       <div className="avatar flex items-center flex-row gap-4">
@@ -71,7 +135,10 @@ function AgentDetails() {
 
       <section className="my-4">
         <h1 className="font-bold text-lg md:text-2xl">Get in Touch</h1>
-        <form action="" className="max-w-md my-4">
+        
+        <div className="flex flex-col gap-4 md:flex-row ">
+          {/* FORM */}
+          <form action="" className="max-w-md my-4 md:max-w-none flex-1">
           <div className="grid md:grid-cols-1 gap-4 mb-6">
             <div className="flex flex-col gap-2 ">
               <Label htmlFor="email" className="text-left">
@@ -126,6 +193,28 @@ function AgentDetails() {
           </div>
           <Button type="submit">Send</Button>
         </form>
+
+          {/* CHAT BOX */}
+
+          <div className="chatbox flex flex-1 flex-col justify-end p-3 outline-1 border border-1 rounded-lg outline-gray-100">
+              {/* messages area */}
+
+              <section className="messages flex flex-col gap-1 text-sm mb-2">
+                {
+                  messages.map((message,idx) => (
+                  <p key={idx} className={`text-white flex px-2 py-1 rounded-lg w-max ${user?.id == message.id ? 'rounded-tr-none bg-gray-800 self-end' : 'rounded-tl-none bg-slate-600'}`}>
+                    {message.message}
+                  </p>))
+                }
+              </section>
+
+              <div className="flex gap-2">
+                <Input className="flex-1" type="text" name="" id="input" />
+                <Button className='flex items-center justify-center' onClick={(event) => {handleAgentMessage(event)}}><Send size={16}/></Button>
+              </div>
+          </div>
+
+        </div>
       </section>
     </div>
   );

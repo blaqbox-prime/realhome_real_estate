@@ -5,11 +5,14 @@ import { Link } from 'react-router-dom'
 
 function BackToHome() {
   return (
-    <Link to={'/'}>
-            <Button className="text-lg mt-6"> 
-                <PiHouseSimple className="mr-3"/> Go Home
-            </Button>
-        </Link>
+    <div clasName="home-section">
+      {/* 
+      
+      
+      
+      
+      */}
+    </div>
   )
 }
 
