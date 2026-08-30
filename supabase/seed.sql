@@ -13,12 +13,15 @@ INSERT INTO auth.users (
 )
 SELECT
     gen_random_uuid(),
-    'user_' || gs || '@example.com',
+    lower((ARRAY['Thabo','Lerato','Anele','Mpho','Naledi','Sipho','Zanele','Kagiso','Ayanda','Bongani','Karabo','Nomsa','Themba','Precious','Sibusiso','Nandi','Lunga','Masego','Tshepo','Refilwe'])[ ((gs - 1) % 20) + 1 ] || '.' || gs || '@example.com'),
     'dummy-password',
     now(),
     now(),
     now(),
-    jsonb_build_object('first_name', 'User', 'last_name', gs::text),
+    jsonb_build_object(
+        'first_name', (ARRAY['Thabo','Lerato','Anele','Mpho','Naledi','Sipho','Zanele','Kagiso','Ayanda','Bongani','Karabo','Nomsa','Themba','Precious','Sibusiso','Nandi','Lunga','Masego','Tshepo','Refilwe'])[ ((gs - 1) % 20) + 1 ],
+        'last_name', (ARRAY['Mokoena','Dlamini','Ndlovu','Mthembu','Van Wyk','Naidoo','Molefe','Botha','Mabena','Pillay','Mahlangu','Jacobs','Mthethwa','Sithole','Mkhize','Williams','Molefe','Nkosi','Pretorius','Radebe'])[ ((gs - 1) % 20) + 1 ]
+    ),
     false,
     false
 FROM generate_series(1, 100) AS gs
@@ -27,8 +30,8 @@ ON CONFLICT DO NOTHING;
 INSERT INTO public.profiles (id, first_name, last_name, email, profile_picture, created_at, updated_at)
 SELECT
     au.id,
-    'User' || row_number() OVER (ORDER BY au.id),
-    'Profile' || row_number() OVER (ORDER BY au.id),
+    (ARRAY['Thabo','Lerato','Anele','Mpho','Naledi','Sipho','Zanele','Kagiso','Ayanda','Bongani','Karabo','Nomsa','Themba','Precious','Sibusiso','Nandi','Lunga','Masego','Tshepo','Refilwe'])[ ((substring(au.email FROM '\.([0-9]+)@')::integer - 1) % 20) + 1 ],
+    (ARRAY['Mokoena','Dlamini','Ndlovu','Mthembu','Van Wyk','Naidoo','Molefe','Botha','Mabena','Pillay','Mahlangu','Jacobs','Mthethwa','Sithole','Mkhize','Williams','Molefe','Nkosi','Pretorius','Radebe'])[ ((substring(au.email FROM '\.([0-9]+)@')::integer - 1) % 20) + 1 ],
     au.email,
     CASE
         WHEN row_number() OVER (ORDER BY au.id) % 10 = 0 THEN 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=400'
@@ -47,7 +50,7 @@ SELECT
 FROM (
     SELECT au.id, au.email
     FROM auth.users au
-    WHERE au.email LIKE 'user_%@example.com'
+    WHERE au.email ~ '^[a-z]+\.[0-9]+@example\.com$'
     ORDER BY au.created_at
     LIMIT 100
 ) au
@@ -111,10 +114,10 @@ SELECT
         OFFSET ((gs - 1) % (SELECT COUNT(*) FROM public.agents))
         LIMIT 1
     ),
-    'Property ' || gs,
-    'Contemporary home designed for modern living with premium natural light, refined finishes, and comfortable indoor-outdoor flow.',
+    (ARRAY['Sunlit Family Retreat','Modern City Garden Home','The Oakview Residence','Coastal Breeze Apartment','Serene Stellenbosch Villa','Parkside Entertainer','The Highveld Haven','Lakeside Contemporary Home','Elegant Sandton Residence','Mountain View Townhouse','The Willow Lane House','Urban Loft with Rooftop Views','Quiet Cornerstone Cottage','The Palm House','Golden Hour Garden Estate','Secure North-facing Home','The Courtyard Residence','Blue Crane Family Home','The Glasshouse Villa','The Heritage Park Home'])[ ((gs - 1) % 20) + 1 ],
+    (ARRAY['A welcoming family home with generous living spaces, a bright kitchen, and a private garden made for relaxed weekends and easy entertaining.','Designed for effortless city living, this well-appointed residence pairs clean lines with warm finishes, secure parking, and excellent access to local amenities.','Set in a quiet established neighbourhood, this home offers generous bedrooms, flowing reception areas, and mature trees that create a peaceful everyday setting.','An easy-care apartment with open-plan living, a covered balcony, and contemporary finishes. Ideal for professionals seeking comfort, security, and a convenient address.','A refined villa surrounded by vineyards and mountain views, with spacious entertaining areas, a private garden, and the calm atmosphere of the Cape Winelands.','Perfect for hosting, this bright property features a sociable kitchen, covered patio, sparkling pool, and a practical layout for modern family life.','A comfortable Highveld home with excellent natural light, a fireplace, and flexible rooms that work equally well for family living, guests, or a home office.','Enjoy relaxed lakeside living in this modern residence with wide windows, generous accommodation, and outdoor spaces that make the most of its tranquil setting.','A polished urban residence with sophisticated finishes, secure access, and effortless entertaining areas close to restaurants, offices, and shopping.','A beautifully planned townhouse with mountain outlooks, low-maintenance gardens, and bright open-plan interiors suited to lock-up-and-go living.','A warm and inviting home on a leafy street, offering a generous garden, comfortable proportions, and a thoughtful floor plan for growing families.','A stylish loft with double-volume proportions, contemporary finishes, and rooftop views across the city. A distinctive home for buyers who value space and character.','Tucked away from the bustle, this charming cottage combines practical modern upgrades with a private garden and a relaxed, homely feel.','A light-filled home framed by palms and lush planting, with spacious living areas, excellent bedroom accommodation, and a private outdoor entertaining zone.','An impressive garden estate with beautifully proportioned interiors, generous lawns, and a covered entertainment area for memorable gatherings.','A secure north-facing residence with warm winter light, versatile living areas, and a neat garden that is easy to enjoy and maintain.','Built around a sunny central courtyard, this residence brings natural light into every room and offers an inviting balance of privacy and connection.','A well-kept family property with generous accommodation, a practical kitchen, and peaceful outdoor space in a welcoming community.','A striking contemporary villa with glass-fronted living spaces, premium finishes, and a seamless connection to the landscaped garden and pool.','A character-rich home near a landscaped park, blending classic details with modern comforts and an easy, family-friendly layout.'])[ ((gs - 1) % 20) + 1 ],
     (850000 + (gs * 125000))::numeric(12,2),
-    gs || ' Example Street',
+    (ARRAY['12 Jacaranda Crescent','48 Lagoon Drive','7 Protea Lane','19 Acacia Avenue','31 Vineyard Road','5 Parkview Close','62 Aloe Street','14 Lakeview Road','9 Melrose Boulevard','27 Mountain Rise','3 Willow Avenue','18 Market Street','44 Cornerstone Road','6 Palm Crescent','81 Golden Hour Drive','22 Northgate Lane','10 Courtyard Road','36 Blue Crane Street','4 Glasshouse Way','55 Heritage Park'])[ ((gs - 1) % 20) + 1 ],
     CASE
         WHEN gs % 10 = 0 THEN 'Johannesburg'
         WHEN gs % 10 = 1 THEN 'Cape Town'
@@ -196,9 +199,9 @@ SELECT
         OFFSET ((gs - 1) % (SELECT COUNT(*) FROM public.properties))
         LIMIT 1
     ),
-    'Buyer ' || gs,
-    'buyer_' || gs || '@example.com',
-    'I would like to arrange a viewing for this property and would appreciate more details on the condition, pricing, and availability.',
+    (ARRAY['Mariam Khumalo','David Botha','Sibongile Maseko','Ethan Jacobs','Lindiwe Mthembu','Jason Naidoo','Palesa Radebe','Michael Dlamini','Carmen Williams','Andile Ndlovu'])[ ((gs - 1) % 10) + 1 ],
+    'inquiry_' || gs || '@example.com',
+    (ARRAY['I am interested in arranging a viewing and would like to know whether the property is still available.','Could you please share more information about the levies, utilities, and recent improvements to the property?','This looks like a great fit for our family. Please let me know which viewing times are available this week.','I would appreciate details about the neighbourhood, parking arrangements, and expected transfer timeline.','Are there any additional costs or special conditions attached to the sale? I would be happy to discuss an offer after viewing.'])[ ((gs - 1) % 5) + 1 ],
     now()
 FROM generate_series(1, 100) AS gs
 ON CONFLICT DO NOTHING;

@@ -1,4 +1,5 @@
-import React, { Children } from "react";
+/* eslint-disable react/prop-types */
+
 import { useMediaQuery } from "react-responsive";
 
 
@@ -6,7 +7,6 @@ function Banner({
   title,
   text,
   image = "/assets/tower-2.png",
-  bgColor = "bg-gray-100",
   children,
   className = "",
   imageStyle = "",
