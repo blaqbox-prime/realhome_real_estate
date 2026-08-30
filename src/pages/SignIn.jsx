@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import { ThreeDots } from "react-loader-spinner";
 // import { useStore } from "zustand";
 import { useAuthStore } from "@/zustand/store";
-import supabase from "@/lib/supabase";
+import { signIn } from "@/services/authService";
+import { getProfileById } from "@/services/profileService";
 
 function SignIn() {
 
@@ -30,7 +31,7 @@ function SignIn() {
 
     setLoading(true)
 
-    const { data, error } = await supabase.auth.signInWithPassword(formData)
+    const { data, error } = await signIn(formData)
 
     if(error){
       toast.error("failed to sign in: " + error.message)
@@ -44,9 +45,7 @@ function SignIn() {
     const user = data.user;
 
    try {
-    const { data, error } = await supabase
-    .from('profiles')
-    .select().eq('id',user.id);
+    const { data, error } = await getProfileById(user.id);
     
     console.log(data)
 

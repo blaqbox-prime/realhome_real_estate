@@ -10,7 +10,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import SectionTitle from "@/components/SectionTitle";
-import supabase from "@/lib/supabase";
+import { getLatestProperties } from "@/services/propertyService";
 
 
 
@@ -20,7 +20,7 @@ const LatestListings = ({listings}) => {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      const {data, error} = await supabase.from('properties').select().order('created_at', {ascending: false})
+      const {data, error} = await getLatestProperties()
       
       if(error){
         console.log(error)

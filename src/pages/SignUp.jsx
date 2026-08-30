@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import supabase from "@/lib/supabase";
+import { signUp } from "@/services/authService";
 import { toast } from "react-toastify";
 
 
@@ -25,7 +25,7 @@ function SignUp() {
     
     setLoading(true)
 
-    let {data, error} = await supabase.auth.signUp(credentials)
+    let {data, error} = await signUp(credentials)
 
     if(error){
       toast.error(error.message)

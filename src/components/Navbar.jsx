@@ -15,7 +15,7 @@ import { RiMenu3Line } from "react-icons/ri";
 import { useAuthStore } from "@/zustand/store";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "react-toastify";
-import supabase from "@/lib/supabase";
+import { signOut } from "@/services/authService";
 
 const Navbar = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -31,7 +31,7 @@ const Navbar = () => {
   }, [profile]);
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await signOut();
     if (error) {
       console.log(error);
       toast.error("Failed to sign out. Please try again");

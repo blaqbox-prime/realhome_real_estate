@@ -1,5 +1,7 @@
-import supabase from "@/lib/supabase";
 import { create } from "zustand";
+import { getSession } from "@/services/authService";
+import { getAgentByProfileId } from "@/services/agentService";
+import { getProfileById } from "@/services/profileService";
 
 export const useFilterStore = create((set) => ({
     // State variables
@@ -59,7 +61,7 @@ export const useAuthStore = create((set) => ({
       set({ user });
     } else {
       // Fetch user from Supabase if not found in local storage
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSession();
       if (data.session) {
         set({ user: data.session.user });
       }
@@ -73,10 +75,10 @@ export const useAuthStore = create((set) => ({
       set({ profile });
     } else {
       // Fetch profile from Supabase if not found in local storage
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSession();
       if (data.session) {
         // Get Profile
-        const {data: profiles} = await supabase.from('profiles').select().eq('id', data.session.user.id);
+        const {data: profiles} = await getProfileById(data.session.user.id);
         set({ profile: profiles[0] });
       }
     }
@@ -88,10 +90,10 @@ export const useAuthStore = create((set) => ({
       set({ agent });
     } else {
       // Fetch agent from Supabase if not found in local storage
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSession();
       if (data.session) {
         // Get agent
-        const {data: agents} = await supabase.from('agents').select().eq('profile_id', data.session.user.id);
+        const {data: agents} = await getAgentByProfileId(data.session.user.id);
         set({ agent: agents[0] });
       }
     }

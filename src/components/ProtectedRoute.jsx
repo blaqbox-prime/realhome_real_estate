@@ -1,10 +1,10 @@
-import supabase from '@/lib/supabase';
 import { Navigate } from 'react-router-dom';
+import { useAuthStore } from '@/zustand/store';
 
 function ProtectedRoute({ children }) {
-  const session = supabase.auth.session();
+  const user = useAuthStore((state) => state.user);
 
-  if (!session) {
+  if (!user) {
     return <Navigate to="/signin" />;
   }
 

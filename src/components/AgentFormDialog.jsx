@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useForm } from 'react-hook-form'
 import { useAuthStore } from '@/zustand/store'
 import { ThreeDots } from 'react-loader-spinner'
-import supabase from '@/lib/supabase'
+import { saveAgent } from '@/services/agentService'
 import { toast } from 'react-toastify'
 
 function AgentFormDialog() {
@@ -34,10 +34,7 @@ function AgentFormDialog() {
 
     console.log(user)
 
-    const { data, error } = await supabase
-      .from("agents")
-      .upsert({ profile_id: user.id, ...formData })
-      .select();
+    const { data, error } = await saveAgent({ profile_id: user.id, ...formData });
 
       if(error){
         console.log(error)

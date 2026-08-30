@@ -1,5 +1,5 @@
 import AgentCard from '@/components/AgentCard'
-import supabase from '@/lib/supabase'
+import { getAgents } from '@/services/agentService'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -9,7 +9,7 @@ function Agents() {
   // fetch agents ids on load
   useEffect(() => {
     const fetchAgents = async () => {
-      const {data, error} = await supabase.from('agents').select('id');
+      const {data, error} = await getAgents();
 
       if(error){
         console.log(error)

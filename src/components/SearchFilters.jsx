@@ -4,7 +4,6 @@ import { citiesOptions, priceOptions, provincesOptions } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { FaSearch } from "react-icons/fa";
 import { useFilterStore, usePropertiesStore } from "@/zustand/store";
-import supabase from "@/lib/supabase";
 import { ThreeDots } from "react-loader-spinner";
 
 
@@ -50,12 +49,7 @@ function SearchFilters({ className = "" }) {
 
 
 
-    // const { data, error } = await supabase
-    //   .from("properties").select()
-
     // const data = await sql`${queryString}`
-
-    console.log(data);
 
     // data && setProperties(data);
   };

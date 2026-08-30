@@ -12,7 +12,7 @@ import { formattedNumber } from "@/lib/utils";
 import { AiOutlineEdit } from "react-icons/ai";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
-import supabase from "@/lib/supabase";
+import { removeFavourite } from "@/services/engagementService";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/zustand/store";
 
@@ -22,10 +22,7 @@ function FavouritesTable({ favourites = [], editable=false, className='' }) {
 
   const deleteProperty = async (id) => {
     if(user){
-        const response = await supabase
-  .from('favourites')
-  .delete()
-  .eq('property_id', id).eq('profile_id', user?.id)
+        const response = await removeFavourite(id, user?.id)
 
   if(response.status == 204){
     toast.success(`Favourite removed successfully`)

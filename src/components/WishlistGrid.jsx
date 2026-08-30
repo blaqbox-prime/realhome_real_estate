@@ -12,7 +12,7 @@ import { formattedNumber } from "@/lib/utils";
 import { AiOutlineEdit } from "react-icons/ai";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
-import supabase from "@/lib/supabase";
+import { removeWishlistItem } from "@/services/engagementService";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/zustand/store";
 import PropertyCard from "./PropertyCard";
@@ -23,10 +23,7 @@ function WishlistGrid({ wishlist = [], editable=false, className='' }) {
 
   const deleteProperty = async (id) => {
     if(user){
-        const response = await supabase
-  .from('wishlist')
-  .delete()
-  .eq('property_id', id).eq('profile_id', user?.id)
+          const response = await removeWishlistItem(id, user?.id)
 
   if(response.status == 204){
     toast.success(`property removed successfully`)

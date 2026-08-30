@@ -1,4 +1,4 @@
-import supabase from '@/lib/supabase'
+import { getAgentById } from '@/services/agentService'
 import React, { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Circles } from 'react-loader-spinner'
@@ -15,10 +15,7 @@ useEffect(() => {
 
     const getAgent = async () => {
         setLoading(true)
-        const {data, error} = await supabase
-        .from("agents")
-        .select('*, profiles(*)')
-        .eq('id', `${id}`)
+        const {data, error} = await getAgentById(id)
 
         error && console.log(error)
         if (data){

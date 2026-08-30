@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "@/zustand/store";
-import supabase from "@/lib/supabase";
+import { saveAgent } from "@/services/agentService";
 import { toast } from "react-toastify";
 
 function AgentForm() {
@@ -24,10 +24,7 @@ function AgentForm() {
   const onSubmit = async (formData) => {
     setLoading(true);
 
-    const { data, error } = await supabase
-      .from("agents")
-      .upsert({ profile_id: user.id, ...formData })
-      .select();
+    const { data, error } = await saveAgent({ profile_id: user.id, ...formData });
 
       if(error){
         toast.success('Failed to create agent account: ' + error.message)

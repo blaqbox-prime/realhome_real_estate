@@ -1,7 +1,7 @@
 import PropertiesGrid from "@/components/PropertiesGrid";
 import SearchFilters from "@/components/SearchFilters";
 import SectionTitle from "@/components/SectionTitle";
-import supabase from "@/lib/supabase";
+import { getProperties } from "@/services/propertyService";
 import { listings } from "@/lib/utils";
 import PopularListings from "@/sections/PopularListings";
 import { usePropertiesStore } from "@/zustand/store";
@@ -15,10 +15,7 @@ function SearchProperties() {
 
   useEffect(() => {
     const getProperties = async () => {
-      const { data, error } = await supabase
-        .from("properties")
-        .select()
-        .range(1, 50);
+      const { data, error } = await getProperties().range(1, 50);
 
         error ? console.error(error) : console.log(data);
 

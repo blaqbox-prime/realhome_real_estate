@@ -12,7 +12,8 @@ import AgentFormDialog from "@/components/AgentFormDialog";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand/store";
 import { useEffect, useState } from "react";
-import supabase from "@/lib/supabase";
+import { getUserFavourites, getUserWishlist } from "@/services/engagementService";
+import { getProfileById } from "@/services/profileService";
 import Banner from "@/components/Banner";
 import NewPropertyFormDialog from "@/components/NewPropertyFormDialog";
 import FavouritesTable from "@/components/FavouritesTable";
@@ -31,9 +32,7 @@ function Dashboard() {
   useEffect( () => {
     
     const fetchProfile = async () => {
-      const { data, error } = await supabase
-    .from('profiles')
-    .select().eq('id',user.id);
+      const { data, error } = await getProfileById(user.id);
     
     if(error){
       console.log(error)
@@ -49,10 +48,7 @@ function Dashboard() {
   useEffect( () => {
     
     const fetchFavourites = async () => {
-      const { data, error } = await supabase
-    .from('favourites')
-    .select('*, properties(*)')
-    .eq('profile_id',user.id);
+      const { data, error } = await getUserFavourites(user.id);
     
     if(error){
       console.log(error)
@@ -67,10 +63,7 @@ function Dashboard() {
   useEffect( () => {
     
     const fetchwishlist = async () => {
-      const { data, error } = await supabase
-    .from('wishlist')
-    .select('*, properties(*)')
-    .eq('profile_id',user.id);
+      const { data, error } = await getUserWishlist(user.id);
     
     if(error){
       console.log(error)

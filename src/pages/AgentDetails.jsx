@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import supabase from "@/lib/supabase";
+import { getAgentPortfolio } from "@/services/agentService";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -25,10 +25,7 @@ function AgentDetails() {
   useEffect(() => {
     const getAgent = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("agents")
-        .select("*, profiles(*), properties(*)")
-        .eq("id", `${params.id}`);
+      const { data, error } = await getAgentPortfolio(params.id);
 
       error && console.log(error);
       if (data) {

@@ -6,7 +6,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import supabase from "@/lib/supabase";
+import { getAgentById } from "@/services/agentService";
+import { getPropertyById } from "@/services/propertyService";
 import React, { useEffect, useState } from "react";
 import { IoBedSharp } from "react-icons/io5";
 import { Link, useParams } from "react-router-dom";
@@ -44,15 +45,9 @@ function Property() {
   // Get the details of a property
   useEffect(() => {
     const getProperty = async () => {
-      const { data, error } = await supabase
-        .from("properties")
-        .select("*")
-        .eq("id", propertyId);
+      const { data, error } = await getPropertyById(propertyId);
 
-      const { data: agentDetails, agentError } = await supabase
-        .from("agents")
-        .select("*, profiles(*)")
-        .eq("id", data[0].agent_id);
+      const { data: agentDetails, agentError } = await getAgentById(data[0].agent_id);
 
       error && console.log(error);
       if (data) {

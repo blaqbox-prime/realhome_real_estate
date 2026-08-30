@@ -4,7 +4,15 @@ import { Link } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { PiBookmarkSimpleBold, PiBookmarkSimpleFill } from "react-icons/pi";
 import { useAuthStore } from "@/zustand/store";
-import supabase from "@/lib/supabase";
+import { getSession } from "@/services/authService";
+import {
+  addFavourite,
+  addWishlistItem,
+  getFavourite,
+  getWishlistItem,
+  removeFavourite,
+  removeWishlistItem,
+} from "@/services/engagementService";
 import { toast } from "react-toastify";
 
 const PropertyCard = ({ property, liked = false, wishListed = false }) => {
@@ -16,7 +24,8 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
   useEffect(() => {
     const checkUser = async () => {
       if (!user) {
-        const { session } = await supabase.auth.getSession();
+        const { data } = await getSession();
+        const { session } = data;
         if (session) {
           fetchUser();
         }
@@ -24,21 +33,14 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
     };
 
     const cardEngagements = async () => {
-      const { data: liked, error } = await supabase
-        .from("favourites")
-        .select("*")
-        .eq("property_id", property.id)
-        .eq('profile_id', user.id)
+      if (!user) return;
+      const { data: liked, error } = await getFavourite(property.id, user.id)
 
         if(liked.length > 0){
             setisLiked(true)
         }
 
-        const { data, errorWishlist } = await supabase
-        .from("wishlist")
-        .select("*")
-        .eq("property_id", property.id)
-        .eq('profile_id', user.id)
+        const { data, errorWishlist } = await getWishlistItem(property.id, user.id)
 
         if(data.length > 0){
             setisWishListed(true)
@@ -56,11 +58,7 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
     });
 
     if (isWishlisted) {
-      const { data, error } = await supabase
-        .from("wishlist")
-        .delete()
-        .eq("property_id", property.id)
-        .eq("profile_id", user.id);
+      const { data, error } = await removeWishlistItem(property.id, user.id);
 
       if (error) {
         toast.error("Could not remove property from wishlist");
@@ -71,10 +69,7 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
 
       setisWishListed(!isWishlisted);
     } else {
-      const { data, error } = await supabase.from("wishlist").insert({
-        property_id: property.id,
-        profile_id: user.id,
-      });
+      const { data, error } = await addWishlistItem(property.id, user.id);
 
       if (error) {
         toast.error("Could not add property to wishlist");
@@ -89,10 +84,7 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
 
   const handleLiked = async () => {
     if (!isLiked) {
-      const { data, error } = await supabase.from("favourites").insert({
-        property_id: property.id,
-        profile_id: user.id,
-      });
+      const { data, error } = await addFavourite(property.id, user.id);
 
       if (error) {
         toast.error("Could not add property to favourites");
@@ -101,11 +93,7 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
       }
       toast.error("Added to favourites ♥");
     } else {
-      const { data, error } = await supabase
-        .from("favourites")
-        .delete()
-        .eq("property_id", property.id)
-        .eq("profile_id", user.id);
+      const { data, error } = await removeFavourite(property.id, user.id);
 
       if (error) {
         toast.error("Could not remove property from favourites");

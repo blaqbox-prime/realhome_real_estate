@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import supabase from "@/lib/supabase";
+import { saveProfile } from "@/services/profileService";
+import { getPictureUrl, uploadPicture } from "@/services/storageService";
 import { ThreeDots } from "react-loader-spinner";
 import { useAuthStore } from "@/zustand/store";
 
@@ -30,12 +31,7 @@ function ProfileForm({disabled=false}) {
     // Upload the image and return the url to be recorded into the db
     const imagePicker = document.getElementById("imagePicker");
     const file = imagePicker.files[0] ?? null;
-    const { data, error } = await supabase.storage
-      .from("pictures")
-      .upload(`public/${file.name}`, file, {
-        cacheControl: "3600",
-        upsert: false,
-      });
+    const { data, error } = await uploadPicture(file);
 
     if (error) {
       toast.error("Something went wrong: " + error.message);
@@ -48,16 +44,13 @@ function ProfileForm({disabled=false}) {
     // record the full record into the profiles table
     const {
       data: { publicUrl },
-    } = supabase.storage.from("pictures").getPublicUrl(imagePath);
+    } = getPictureUrl(imagePath);
 
     const recordData = { id: user.user.id,...formData, profile_picture: publicUrl };
     console.log(recordData);
 
     try {
-      const { data, error } = await supabase
-  .from('profiles')
-  .upsert(recordData)
-  .select()
+        const { data, error } = await saveProfile(recordData)
 
   if(error){
     toast.error("Failed to update profile: " + error.message)
