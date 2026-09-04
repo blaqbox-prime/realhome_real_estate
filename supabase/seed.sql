@@ -2,22 +2,46 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 INSERT INTO auth.users (
     id,
+    instance_id,
     email,
     encrypted_password,
+    aud,
+    role,
+    confirmation_token,
+    recovery_token,
+    email_change_token_new,
+    email_change,
+    phone_change_token,
+    phone_change,
+    email_change_token_current,
+    reauthentication_token,
     email_confirmed_at,
     created_at,
     updated_at,
+    raw_app_meta_data,
     raw_user_meta_data,
     is_super_admin,
     is_anonymous
 )
 SELECT
     gen_random_uuid(),
+    '00000000-0000-0000-0000-000000000000',
     lower((ARRAY['Thabo','Lerato','Anele','Mpho','Naledi','Sipho','Zanele','Kagiso','Ayanda','Bongani','Karabo','Nomsa','Themba','Precious','Sibusiso','Nandi','Lunga','Masego','Tshepo','Refilwe'])[ ((gs - 1) % 20) + 1 ] || '.' || gs || '@example.com'),
-    'dummy-password',
+    '$2a$10$Q7njxBzQi4QVnC4nOz9O5OyjrpHxTxXcggzDjh73QbzcqtiCDQ9mu',
+    'authenticated',
+    'authenticated',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
     now(),
     now(),
     now(),
+    jsonb_build_object('provider', 'email', 'providers', jsonb_build_array('email')),
     jsonb_build_object(
         'first_name', (ARRAY['Thabo','Lerato','Anele','Mpho','Naledi','Sipho','Zanele','Kagiso','Ayanda','Bongani','Karabo','Nomsa','Themba','Precious','Sibusiso','Nandi','Lunga','Masego','Tshepo','Refilwe'])[ ((gs - 1) % 20) + 1 ],
         'last_name', (ARRAY['Mokoena','Dlamini','Ndlovu','Mthembu','Van Wyk','Naidoo','Molefe','Botha','Mabena','Pillay','Mahlangu','Jacobs','Mthethwa','Sithole','Mkhize','Williams','Molefe','Nkosi','Pretorius','Radebe'])[ ((gs - 1) % 20) + 1 ]
@@ -25,6 +49,23 @@ SELECT
     false,
     false
 FROM generate_series(1, 100) AS gs
+ON CONFLICT DO NOTHING;
+
+INSERT INTO auth.identities (provider_id, user_id, identity_data, provider, created_at, updated_at)
+SELECT
+    au.id::text,
+    au.id,
+    jsonb_build_object(
+        'sub', au.id::text,
+        'email', au.email,
+        'email_verified', true,
+        'phone_verified', false
+    ),
+    'email',
+    au.created_at,
+    au.updated_at
+FROM auth.users au
+WHERE au.email ~ '^[a-z]+\.[0-9]+@example\.com$'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO public.profiles (id, first_name, last_name, email, profile_picture, created_at, updated_at)
