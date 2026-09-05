@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -22,12 +22,6 @@ function AgentFormDialog() {
   const [isFormSuccess, setFormSuccess] = useState(false);
   const user = useAuthStore((state) => state.user);
   const setAgent = useAuthStore((state) => state.setAgent);
-  const fetchUser = useAuthStore((state) => state.fetchUser)
-
-  useEffect(() => {
-    fetchUser()
-  }, [])
-  
 
   const onSubmit = async (formData) => {
     setLoading(true);
