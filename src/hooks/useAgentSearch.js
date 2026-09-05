@@ -38,6 +38,9 @@ const getAgentCities = (agent) => {
   return [...new Set(cities.filter(Boolean))];
 };
 
+const getAgentProvinces = (agent) =>
+  [...new Set((agent?.properties ?? []).map((property) => property?.province).filter(Boolean))];
+
 const compareText = (firstValue, secondValue) =>
   firstValue.localeCompare(secondValue, undefined, { sensitivity: "base" });
 
@@ -47,11 +50,13 @@ function useAgentSearch({
   initialSearch = "",
   initialAgency = ANY_OPTION,
   initialCity = ANY_OPTION,
+  initialProvince = ANY_OPTION,
   initialSort = AGENT_SORT_OPTIONS.NAME,
 } = {}) {
   const [search, setSearch] = useState(initialSearch);
   const [agency, setAgency] = useState(initialAgency);
   const [city, setCity] = useState(initialCity);
+  const [province, setProvince] = useState(initialProvince);
   const [sortBy, setSortBy] = useState(initialSort);
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
 
@@ -82,6 +87,12 @@ function useAgentSearch({
     return [ANY_OPTION, ...new Set(agentCities.sort(compareText))];
   }, [agents]);
 
+  const provinces = useMemo(() => {
+    const agentProvinces = agents.flatMap(getAgentProvinces);
+
+    return [ANY_OPTION, ...new Set(agentProvinces.sort(compareText))];
+  }, [agents]);
+
   const filteredAgents = useMemo(() => {
     const normalizedSearch = debouncedSearch.toLocaleLowerCase();
 
@@ -90,6 +101,7 @@ function useAgentSearch({
         const name = getAgentName(agent).toLocaleLowerCase();
         const agentAgency = agent?.agency ?? "";
         const agentCities = getAgentCities(agent);
+        const agentProvinces = getAgentProvinces(agent);
         const searchableText = [name, agentAgency, ...agentCities]
           .join(" ")
           .toLocaleLowerCase();
@@ -97,8 +109,10 @@ function useAgentSearch({
         const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch);
         const matchesAgency = agency === ANY_OPTION || agentAgency === agency;
         const matchesCity = city === ANY_OPTION || agentCities.includes(city);
+        const matchesProvince =
+          province === ANY_OPTION || agentProvinces.includes(province);
 
-        return matchesSearch && matchesAgency && matchesCity;
+        return matchesSearch && matchesAgency && matchesCity && matchesProvince;
       })
       .sort((firstAgent, secondAgent) => {
         switch (sortBy) {
@@ -116,7 +130,7 @@ function useAgentSearch({
             return compareText(getAgentName(firstAgent), getAgentName(secondAgent));
         }
       });
-  }, [agents, agency, city, debouncedSearch, sortBy]);
+  }, [agents, agency, city, debouncedSearch, province, sortBy]);
 
   return {
     agents: filteredAgents,
@@ -127,10 +141,13 @@ function useAgentSearch({
     setAgency,
     city,
     setCity,
+    province,
+    setProvince,
     sortBy,
     setSortBy,
     agencies,
     cities,
+    provinces,
     isDebouncing: search.trim() !== debouncedSearch,
   };
 }

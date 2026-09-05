@@ -1,4 +1,6 @@
 import AgentCard from "@/components/AgentCard";
+import AgentsFilter from "@/components/AgentsFilter";
+import FeaturedAgencyLeaders from "@/components/FeaturedAgencyLeaders";
 import { getAgents } from "@/services/agentService";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -8,7 +10,7 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 function Agents() {
   const [agents, setAgents] = useState([]);
 
-  // fetch agents ids on load
+  // Fetch the joined agent data used by the filters and cards.
   useEffect(() => {
     const fetchAgents = async () => {
       const { data, error } = await getAgents();
@@ -81,13 +83,20 @@ function Agents() {
           No Agents listed yet.
         </p>
       ) : (
-        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 my-4">
-          {agents.map((agent) => (
-            <Link key={agent.id} to={`/agents/${agent.id}`}>
-              <AgentCard id={agent.id} />
-            </Link>
-          ))}
-        </section>
+        <AgentsFilter agents={agents}>
+          {(filteredAgents) => (
+            <>
+              <FeaturedAgencyLeaders agents={agents} />
+              <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 my-4">
+                {filteredAgents.map((agent) => (
+                  <Link key={agent.id} to={`/agents/${agent.id}`}>
+                    <AgentCard id={agent.id} />
+                  </Link>
+                ))}
+              </section>
+            </>
+          )}
+        </AgentsFilter>
       )}
     </main>
   );
