@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 
 const PROPERTY_IMAGE_PLACEHOLDER = "/assets/home-hero.jpg";
 
-const PropertyCard = ({ property, liked = false, wishListed = false }) => {
+const PropertyCard = ({ property, liked = false, wishListed = false, featured = false }) => {
   const [isLiked, setisLiked] = useState(liked);
   const [isWishlisted, setisWishListed] = useState(wishListed);
   const user = useAuthStore((state) => state.user);
@@ -101,7 +101,7 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
           <img
             src={property.cover_img || PROPERTY_IMAGE_PLACEHOLDER}
             alt={property.title || "Property"}
-            className=" rounded-2xl filter object-cover brightness-50 h-full w-full"
+            className=" rounded-2xl filter object-cover brightness-75 h-full w-full hover:brightness-90 transition-all duration-300"
             onError={(event) => {
               if (event.currentTarget.src.endsWith(PROPERTY_IMAGE_PLACEHOLDER)) {
                 return;
@@ -113,12 +113,20 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
           <h2 className="absolute bottom-4 left-4 font-extrabold text-white text-base md:text-lg line-clamp-2 w-[80%]">
             {property.title}
           </h2>
+          {featured && <p className="absolute top-3 left-3 font-semibold bg-gray-100 rounded-lg px-2 py-1 text-sm">
+            Featured
+          </p>}
         </div>
       </Link>
       {/* Price */}
-      <p className="mt-2 text-gray-600 font-bold">
+      <div className="flex items-baseline justify-between">
+        <p className="mt-2 text-gray-900 text-lg font-bold">
         R{formattedNumber(property.price)}
       </p>
+      <p className="text-sm font-semibold text-gray-500">
+        {property.property_type}, {property.city}
+      </p>
+      </div>
       {/* Description */}
       <p className="text-sm text-gray-400 line-clamp-2">
         {property.description}

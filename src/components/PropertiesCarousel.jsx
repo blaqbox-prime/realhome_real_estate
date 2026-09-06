@@ -9,7 +9,7 @@ function PropertiesCarousel({properties=[]}) {
           {/* Loop Over Each Listing */}
           {properties.map((property) => (
             <CarouselItem key={property.id} className="pr-4 basis-auto cursor-pointer">
-            <PropertyCard property={property} />
+            <PropertyCard property={property} featured />
           </CarouselItem>
           ))}
         </CarouselContent>
