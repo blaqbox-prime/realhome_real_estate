@@ -12,16 +12,13 @@ import { formattedNumber } from "@/lib/utils";
 import { AiOutlineEdit } from "react-icons/ai";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { FaRegEdit } from "react-icons/fa";
-import supabase from "@/lib/supabase";
+import { deleteProperty } from "@/services/propertyService";
 import { toast } from "react-toastify";
 
 function PropertiesTable({ properties = [], editable=false, className='' }) {
 
   const deleteProperty = async (id) => {
-    const response = await supabase
-  .from('properties')
-  .delete()
-  .eq('id', id)
+    const response = await deleteProperty(id)
 
   if(response.status == 204){
     toast.success(`Property ${id} deleted successfully`)

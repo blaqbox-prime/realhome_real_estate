@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useForm } from 'react-hook-form'
 import { useAuthStore } from '@/zustand/store'
 import { ThreeDots } from 'react-loader-spinner'
-import supabase from '@/lib/supabase'
+import { saveAgent } from '@/services/agentService'
 import { toast } from 'react-toastify'
 
 function AgentFormDialog() {
@@ -22,22 +22,13 @@ function AgentFormDialog() {
   const [isFormSuccess, setFormSuccess] = useState(false);
   const user = useAuthStore((state) => state.user);
   const setAgent = useAuthStore((state) => state.setAgent);
-  const fetchUser = useAuthStore((state) => state.fetchUser)
-
-  useEffect(() => {
-    fetchUser()
-  }, [])
-  
 
   const onSubmit = async (formData) => {
     setLoading(true);
 
     console.log(user)
 
-    const { data, error } = await supabase
-      .from("agents")
-      .upsert({ profile_id: user.id, ...formData })
-      .select();
+    const { data, error } = await saveAgent({ profile_id: user.id, ...formData });
 
       if(error){
         console.log(error)

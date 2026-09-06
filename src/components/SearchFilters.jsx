@@ -4,7 +4,7 @@ import { citiesOptions, priceOptions, provincesOptions } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { FaSearch } from "react-icons/fa";
 import { useFilterStore, usePropertiesStore } from "@/zustand/store";
-import supabase from "@/lib/supabase";
+import { getProperties } from "@/services/propertyService";
 import { ThreeDots } from "react-loader-spinner";
 
 
@@ -12,6 +12,8 @@ import { ThreeDots } from "react-loader-spinner";
 
 function SearchFilters({ className = "" }) {
   const setProperties = usePropertiesStore((state) => state.setProperties);
+  const setPropertiesLoading = usePropertiesStore((state) => state.setPropertiesLoading);
+  const setPropertiesError = usePropertiesStore((state) => state.setPropertiesError);
   const changeProvince = useFilterStore((state) => state.changeProvince);
   const changeCity = useFilterStore((state) => state.changeCity);
   const changePropertyType = useFilterStore(
@@ -31,33 +33,27 @@ function SearchFilters({ className = "" }) {
   const [loading, setLoading] = useState(false);
 
   const handleSearchClick = async () => {
-    console.log({ province, city, propertyType, minPrice, maxPrice });
+    setLoading(true);
+    setPropertiesLoading(true);
 
-    // const queryString = `SELECT * FROM properties WHERE price >= ${
-    //   minPrice == "Any" ? 0 : minPrice
-    // } AND price <= ${maxPrice == "Any" ? 0 : maxPrice}`;
+    let query = getProperties().range(0, 49);
 
-    // if (province != "Any") {
-    //   queryString = queryString.concat(` AND province ILIKE %${province}%`);
-    // }
+    if (province !== "Any") query = query.eq("province", province);
+    if (city !== "Any") query = query.eq("city", city);
+    if (propertyType !== "Any") query = query.eq("property_type", propertyType);
+    if (minPrice !== "Any") query = query.gte("price", Number(minPrice));
+    if (maxPrice !== "Any") query = query.lte("price", Number(maxPrice));
 
-    // if (city != "Any") {
-    //   queryString = queryString.concat(` AND city ILIKE ${city}%`);
-    // }
-    // if (propertyType != "Any") {
-    //   queryString = queryString.concat(` AND property_type ILIKE ${propertyType}%`);
-    // }
+    const { data, error } = await query;
 
+    if (error) {
+      setPropertiesError(error);
+    } else {
+      setProperties(data ?? []);
+      setPropertiesLoading(false);
+    }
 
-
-    // const { data, error } = await supabase
-    //   .from("properties").select()
-
-    // const data = await sql`${queryString}`
-
-    console.log(data);
-
-    // data && setProperties(data);
+    setLoading(false);
   };
 
   return (

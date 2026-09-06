@@ -1,5 +1,4 @@
 import PropertiesCarousel from "@/components/PropertiesCarousel";
-import PropertiesTable from "@/components/PropertiesTable";
 import SectionTitle from "@/components/SectionTitle";
 import { Button } from "@/components/ui/button";
 import { greeting, listings } from "@/lib/utils";
@@ -12,7 +11,7 @@ import AgentFormDialog from "@/components/AgentFormDialog";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/zustand/store";
 import { useEffect, useState } from "react";
-import supabase from "@/lib/supabase";
+import { getUserFavourites, getUserWishlist } from "@/services/engagementService";
 import Banner from "@/components/Banner";
 import NewPropertyFormDialog from "@/components/NewPropertyFormDialog";
 import FavouritesTable from "@/components/FavouritesTable";
@@ -21,38 +20,16 @@ import WishlistGrid from "@/components/WishlistGrid";
 function Dashboard() {
   const navigate = useNavigate();
   const profile = useAuthStore((state) => state.profile)
-  const setProfile = useAuthStore((state) => state.setProfile)
   const user = useAuthStore((state) => state.user)
   const agent = useAuthStore((state) => state.agent)
-  const fetchAgent = useAuthStore((state) => state.fetchAgent)
   const [favourites, setFavourites] = useState([]); 
   const [wishlist, setWishlist] = useState([]); 
 
   useEffect( () => {
-    
-    const fetchProfile = async () => {
-      const { data, error } = await supabase
-    .from('profiles')
-    .select().eq('id',user.id);
-    
-    if(error){
-      console.log(error)
-    }else {
-      setProfile(data[0])
-    }
-    }
-    fetchProfile()
-    fetchAgent()
-    
-  }, [profile])
-
-  useEffect( () => {
+    if (!user) return
     
     const fetchFavourites = async () => {
-      const { data, error } = await supabase
-    .from('favourites')
-    .select('*, properties(*)')
-    .eq('profile_id',user.id);
+      const { data, error } = await getUserFavourites(user.id);
     
     if(error){
       console.log(error)
@@ -62,15 +39,13 @@ function Dashboard() {
     }
     fetchFavourites()
   
-  }, [profile])
+  }, [user])
 
   useEffect( () => {
+    if (!user) return
     
     const fetchwishlist = async () => {
-      const { data, error } = await supabase
-    .from('wishlist')
-    .select('*, properties(*)')
-    .eq('profile_id',user.id);
+      const { data, error } = await getUserWishlist(user.id);
     
     if(error){
       console.log(error)
@@ -80,7 +55,7 @@ function Dashboard() {
     }
     fetchwishlist()
   
-  }, [profile])
+  }, [user])
 
   
 

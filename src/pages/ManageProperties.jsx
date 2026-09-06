@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import supabase from '@/lib/supabase'
+import { getPropertiesByAgent } from '@/services/propertyService'
 import { listings } from '@/lib/utils'
 import { useAuthStore } from '@/zustand/store'
 import React, { useEffect, useState } from 'react'
@@ -24,10 +24,7 @@ function ManageProperties() {
     }
 
     const getProperties = async () => {
-      const { data, error } = await supabase
-        .from("properties")
-        .select()
-        .eq('agent_id', agent?.id)
+      const { data, error } = await getPropertiesByAgent(agent?.id)
         error ? console.error(error) : console.log(data);
 
         data && setProperties(data) 

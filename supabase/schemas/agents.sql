@@ -6,6 +6,9 @@ CREATE TABLE IF NOT EXISTS public.agents (
     profile_id uuid NOT NULL UNIQUE REFERENCES public.profiles(id) ON DELETE CASCADE,
     agency text NOT NULL,
     years_of_experience integer NOT NULL DEFAULT 0 CHECK (years_of_experience >= 0),
+    bio varchar(255),
+    rating numeric(2,1) NOT NULL DEFAULT 0.0
+        CONSTRAINT agents_rating_range_check CHECK (rating >= 0 AND rating <= 5),
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );

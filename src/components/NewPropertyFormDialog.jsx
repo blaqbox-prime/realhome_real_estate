@@ -24,7 +24,8 @@ import {
 import { Switch } from "./ui/switch";
 import { toast } from "react-toastify";
 import { useAuthStore } from "@/zustand/store";
-import supabase from "@/lib/supabase";
+import { createProperty } from "@/services/propertyService";
+import { getPictureUrl, uploadPicture } from "@/services/storageService";
 import { ThreeDots } from "react-loader-spinner";
 
 function NewPropertyFormDialog() {
@@ -39,14 +40,6 @@ function NewPropertyFormDialog() {
   const [coverImgIndex, setCoverImgIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const agent = useAuthStore((state) => state.agent);
-  const fetchAgent = useAuthStore((state) => state.fetchAgent);
-
-  // Fetch Agent details when page loads
-  useEffect(() => {
-    if (!agent) {
-      fetchAgent();
-    }
-  }, []);
 
   const onSubmit = async (formdata) => {
     setLoading(true);
@@ -58,12 +51,7 @@ function NewPropertyFormDialog() {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      const { data, error } = await supabase.storage
-        .from("pictures")
-        .upload(`public/${file.name}`, file, {
-          cacheControl: "3600",
-          upsert: true,
-        });
+      const { data, error } = await uploadPicture(file, { upsert: true });
 
       if (error) {
         toast.error(
@@ -78,7 +66,7 @@ function NewPropertyFormDialog() {
       // record the full record into the profiles table
       const {
         data: { publicUrl },
-      } = supabase.storage.from("pictures").getPublicUrl(imagePath);
+      } = getPictureUrl(imagePath);
       //add the public url to the images array
       images.push(publicUrl);
     }
@@ -87,7 +75,7 @@ function NewPropertyFormDialog() {
     console.log(recordData);
     
     // Writ to the database
-    const {data, error} = await supabase.from('properties').insert(recordData).select()
+    const {data, error} = await createProperty(recordData)
     if (error) {
       toast.error('Failed to create new property')
       console.log(error)

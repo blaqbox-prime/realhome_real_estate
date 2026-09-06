@@ -12,7 +12,7 @@ import {
 import SectionTitle from "@/components/SectionTitle";
 import PropertiesCarousel from "@/components/PropertiesCarousel";
 import { useState } from "react";
-import supabase from "@/lib/supabase";
+import { getLatestProperties } from "@/services/propertyService";
 
 
 
@@ -22,7 +22,7 @@ const PopularListings = ({listings, seeMoreButton = true, className=''}) => {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      const {data, error} = await supabase.from('properties').select().order('created_at', {ascending: false})
+      const {data, error} = await getLatestProperties()
       
       if(error){
         console.log(error)
