@@ -43,7 +43,7 @@ function FeaturedAgentCard({ agent }) {
               {agent?.agency ?? "Independent agent"} •{" "}
               {agent?.years_of_experience ?? 0} yrs experience
             </p>
-            <p className="truncate text-sm text-gray-500 mt-2 line-clamp-2">
+            <p className=" text-sm text-gray-500 mt-2 line-clamp-2">
               {agent?.bio ?? "No bio available."}
             </p>
           </div>

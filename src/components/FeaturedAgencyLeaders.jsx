@@ -29,7 +29,7 @@ function FeaturedAgencyLeaders({ agents = [] }) {
   return (
     <section className="my-4" aria-labelledby="featured-agents-heading" >
       <div className="my-14 text-left">
-        <div className="flex justify-between items-center">
+        <div className="md:flex justify-between items-center ">
             <h1 id="featured-agents-heading" className="mb-5 text-3xl font-semibold flex gap-2 items-center">
         <span>
             <FaAward />

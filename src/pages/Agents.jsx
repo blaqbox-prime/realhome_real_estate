@@ -6,6 +6,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsFillPersonBadgeFill, BsFillBuildingsFill, BsEmojiSmile } from "react-icons/bs";
 import { FaArrowTrendUp } from "react-icons/fa6";
+import paginatedAgentsDisplay from "@/components/paginatedAgentsDisplay";
+import PaginatedAgentsDisplay from "@/components/paginatedAgentsDisplay";
+import Banner from "@/components/Banner";
+import { Button } from "@/components/ui/button";
+import { FaArrowRight } from "react-icons/fa";
 
 function Agents() {
   const [agents, setAgents] = useState([]);
@@ -87,17 +92,26 @@ function Agents() {
           {(filteredAgents) => (
             <>
               <FeaturedAgencyLeaders agents={agents} />
-              <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 my-4">
-                {filteredAgents.map((agent) => (
-                  <Link key={agent.id} to={`/agents/${agent.id}`}>
-                    <AgentCard id={agent.id} />
-                  </Link>
-                ))}
-              </section>
+              <PaginatedAgentsDisplay agents={filteredAgents} />
             </>
           )}
         </AgentsFilter>
       )}
+      <div className="my-28">
+        <Banner
+        title={"Are you a licensed real estate professional?"}
+        text={
+          "Join RealHome's premier agent directory. Elevate your personal brand, tap into verified luxury buyer pipelines, and list properties directly across South Africa."
+        }
+        image="assets/agent_person.png"
+        imageStyle="h-[450px]"
+        className=""
+      >
+        <Link to={'/agents'}>
+          <Button>Apply as an Agent <FaArrowRight className="ml-4"  /> </Button>
+        </Link>
+      </Banner>
+      </div>
     </main>
   );
 }
