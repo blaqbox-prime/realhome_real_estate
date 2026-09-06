@@ -1,4 +1,3 @@
-import AgentCard from "@/components/AgentCard";
 import AgentsFilter from "@/components/AgentsFilter";
 import FeaturedAgencyLeaders from "@/components/FeaturedAgencyLeaders";
 import { getAgents } from "@/services/agentService";
@@ -6,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsFillPersonBadgeFill, BsFillBuildingsFill, BsEmojiSmile } from "react-icons/bs";
 import { FaArrowTrendUp } from "react-icons/fa6";
-import paginatedAgentsDisplay from "@/components/paginatedAgentsDisplay";
 import PaginatedAgentsDisplay from "@/components/paginatedAgentsDisplay";
 import Banner from "@/components/Banner";
 import { Button } from "@/components/ui/button";
