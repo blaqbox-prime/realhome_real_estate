@@ -15,6 +15,8 @@ import {
 } from "@/services/engagementService";
 import { toast } from "react-toastify";
 
+const PROPERTY_IMAGE_PLACEHOLDER = "/assets/home-hero.jpg";
+
 const PropertyCard = ({ property, liked = false, wishListed = false }) => {
   const [isLiked, setisLiked] = useState(liked);
   const [isWishlisted, setisWishListed] = useState(wishListed);
@@ -111,9 +113,16 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
       <Link to={`/properties/${property.id}`}>
         <div className="relative  h-[340px]  object-cover cursor-pointer">
           <img
-            src={property.cover_img}
-            alt="property"
+            src={property.cover_img || PROPERTY_IMAGE_PLACEHOLDER}
+            alt={property.title || "Property"}
             className=" rounded-2xl filter object-cover brightness-50 h-full w-full"
+            onError={(event) => {
+              if (event.currentTarget.src.endsWith(PROPERTY_IMAGE_PLACEHOLDER)) {
+                return;
+              }
+
+              event.currentTarget.src = PROPERTY_IMAGE_PLACEHOLDER;
+            }}
           />
           <h2 className="absolute bottom-4 left-4 font-extrabold text-white text-base md:text-lg line-clamp-2 w-[80%]">
             {property.title}

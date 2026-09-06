@@ -30,7 +30,9 @@ function SearchProperties() {
   return (
     <main className="Properties">
       {/* SEARCH FILTERS */}
-      <SearchFilters className="mt-6"/>
+      <div className="sticky top-0 z-10 bg-white shadow-sm mt-10 py-4">
+        <SearchFilters className="mt-1"/>
+      </div>
 
       {/* Popular listings */}
       <PopularListings listings={listings} seeMoreButton={false} className="mt-6 mb-8" />
