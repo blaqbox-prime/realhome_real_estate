@@ -8,6 +8,7 @@ function Pagination({
   itemKey = (_, index) => index,
   listClassName = "",
   ariaLabel = "Pages",
+  renderItems,
 }) {
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage))
@@ -24,13 +25,17 @@ function Pagination({
 
   return (
     <>
-      <div className={listClassName}>
-        {visibleItems.map((item, index) => (
-          <div key={itemKey(item, startIndex + index)}>
-            {renderItem(item, startIndex + index)}
-          </div>
-        ))}
-      </div>
+      {renderItems ? (
+        renderItems(visibleItems, startIndex)
+      ) : (
+        <div className={listClassName}>
+          {visibleItems.map((item, index) => (
+            <div key={itemKey(item, startIndex + index)}>
+              {renderItem(item, startIndex + index)}
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="flex items-center justify-between gap-4 mt-12">
         <p className="text-gray-400 text-center mb-2">

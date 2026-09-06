@@ -51,7 +51,6 @@ useEffect(() => {
           <TableCaption>A list of your favourite properties.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Property</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Type</TableHead>
@@ -64,7 +63,6 @@ useEffect(() => {
           <TableBody>
             {properties.map((property) => (
               <TableRow>
-                <TableCell className="font-medium line-clamp-1">{property.id}</TableCell>
                 <TableCell className="">{property.title}</TableCell>
                 <TableCell >{property.description}</TableCell>
                 <TableCell>{property.type}</TableCell>
