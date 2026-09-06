@@ -1,21 +1,16 @@
-import Amenity from "@/components/Amenity";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+
 } from "@/components/ui/carousel";
 import { getAgentById } from "@/services/agentService";
 import { getPropertyById } from "@/services/propertyService";
-import React, { useEffect, useState } from "react";
-import { IoBedSharp } from "react-icons/io5";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { SlSizeFullscreen } from "react-icons/sl";
-import { toast, ToastContainer } from "react-toastify";
-import { FaSwimmingPool } from "react-icons/fa";
-import { PiGarageFill, PiPottedPlant } from "react-icons/pi";
+
 import Map from "@/components/Map";
+import usePropertyLocation from "@/hooks/usePropertyLocation";
 // import AgentCard from '@/components/AgentCard';
 import Amenities from "@/components/Amenities";
 import { formattedNumber } from "@/lib/utils";
@@ -34,11 +29,10 @@ function Property() {
 
   // Get the id of the property
   const propertyId = useParams().id;
-  const location = { lat: -29.11813, lng: -29.11813 };
+  const location = usePropertyLocation(property);
 
   const {
     register,
-    handleSubmit,
     formState: { errors },
   } = useForm();
 
@@ -47,7 +41,7 @@ function Property() {
     const getProperty = async () => {
       const { data, error } = await getPropertyById(propertyId);
 
-      const { data: agentDetails, agentError } = await getAgentById(data[0].agent_id);
+      const { data: agentDetails } = await getAgentById(data[0].agent_id);
 
       error && console.log(error);
       if (data) {
@@ -59,23 +53,22 @@ function Property() {
     };
 
     getProperty();
-  }, []);
+  }, [propertyId]);
 
   return (
-    <div className="flex gap-4 flex-col md:flex-row mt-4 text-left w-full">
+    <div className="flex gap-4 flex-col md:flex-row mt-4 text-left w-full page">
       <div className="left flex flex-col  flex-1">
         <img
           src={selectedImage}
           alt=""
-          className="h-[400px] object-cover object-center rounded-2xl mb-2"
+          className="h-[400px] object-cover object-center rounded-2xl mb-2 transition-all duration-300"
         />
         <Carousel>
           <CarouselContent className="-mr-4">
-            {/* Loop Over Each image */}
             {property?.images?.map((img, idx) => (
               <CarouselItem
                 key={idx}
-                className="pr-4 basis-auto cursor-pointer"
+                className="basis-1/4 cursor-pointer"
               >
                 <img
                   src={img}
@@ -94,8 +87,8 @@ function Property() {
 
         {/* Property Details */}
 
-        <section className="details flex flex-col gap-4 md:flex-row justify-between">
-          <div className="article space-y-6 flex-1">
+        <section className="mt-8 details flex flex-col gap-4 md:flex-row justify-between">
+          <div className="article space-y-3 flex-1">
             {/* Title */}
             <div className="flex items-start flex-1 justify-between mt-3 mb-2">
               <h1 className="font-bold text-2xl md:text-3xl capitalize">

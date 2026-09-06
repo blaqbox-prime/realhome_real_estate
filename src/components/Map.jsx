@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useCallback, useEffect, useState } from 'react'
 import * as L from 'leaflet';
- 
-function Map() {
- 
-  const location = {
-    lat: 37.38605,
-    lng: -122.08385};
+
+function Map({ location }) {
+  const fallbackLocation = { lat: -26.2041, lng: 28.0473 };
+  const coordinates = location ?? fallbackLocation;
 
   const [map, setMap] = useState(null);
  
@@ -29,12 +28,14 @@ function Map() {
  
   useEffect(()=>{
     if(map !== null){
-      map.setView([location.lat,location.lng]);
-      const marker = L.marker([location.lat,location.lng],{
+      map.setView([coordinates.lat, coordinates.lng], 14);
+      const marker = L.marker([coordinates.lat, coordinates.lng],{
         icon: L.icon({iconUrl :'/assets/icon-location.svg',iconSize: [46,56]})
       }).addTo(map)
+
+      return () => map.removeLayer(marker);
     }
-  },[map,location])
+  },[map, coordinates])
  
   return (
     <main className="MapContainer flex flex-1 h-80 w-full" ref={mapRef}>
