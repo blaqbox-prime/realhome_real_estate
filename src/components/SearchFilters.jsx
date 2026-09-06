@@ -1,109 +1,86 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
 import DropDownFilter from "./DropDownFilter";
-import { citiesOptions, priceOptions, provincesOptions } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { FaSearch } from "react-icons/fa";
-import { useFilterStore, usePropertiesStore } from "@/zustand/store";
-import { getProperties } from "@/services/propertyService";
-import { ThreeDots } from "react-loader-spinner";
 
-
-
-
-function SearchFilters({ className = "" }) {
-  const setProperties = usePropertiesStore((state) => state.setProperties);
-  const setPropertiesLoading = usePropertiesStore((state) => state.setPropertiesLoading);
-  const setPropertiesError = usePropertiesStore((state) => state.setPropertiesError);
-  const changeProvince = useFilterStore((state) => state.changeProvince);
-  const changeCity = useFilterStore((state) => state.changeCity);
-  const changePropertyType = useFilterStore(
-    (state) => state.changePropertyType
-  );
-  const changeMinPrice = useFilterStore((state) => state.changeMinPrice);
-  const changeMaxPrice = useFilterStore((state) => state.changeMaxPrice);
-
-  const selectedProvince = useFilterStore((state) => state.province);
-
-  const province = useFilterStore((state) => state.province);
-  const city = useFilterStore((state) => state.city);
-  const propertyType = useFilterStore((state) => state.propertyType);
-  const minPrice = useFilterStore((state) => state.minPrice);
-  const maxPrice = useFilterStore((state) => state.maxPrice);
-
-  const [loading, setLoading] = useState(false);
-
-  const handleSearchClick = async () => {
-    setLoading(true);
-    setPropertiesLoading(true);
-
-    let query = getProperties().range(0, 49);
-
-    if (province !== "Any") query = query.eq("province", province);
-    if (city !== "Any") query = query.eq("city", city);
-    if (propertyType !== "Any") query = query.eq("property_type", propertyType);
-    if (minPrice !== "Any") query = query.gte("price", Number(minPrice));
-    if (maxPrice !== "Any") query = query.lte("price", Number(maxPrice));
-
-    const { data, error } = await query;
-
-    if (error) {
-      setPropertiesError(error);
-    } else {
-      setProperties(data ?? []);
-      setPropertiesLoading(false);
-    }
-
-    setLoading(false);
-  };
+function SearchFilters({ className = "", searchState }) {
+  const {
+    province,
+    setProvince,
+    setCity,
+    propertyType,
+    setPropertyType,
+    setMinPrice,
+    setMaxPrice,
+    provinces,
+    cities,
+    propertyTypes,
+    prices,
+  } = searchState;
 
   return (
-    <div
-      className={`wrapper grid grid-cols-2 md:grid-cols-5 md:grid-flow-col gap-2 items-center w-full justify-between ${className}`}
-    >
-      {/* Province */}
-      <DropDownFilter
-        type={"province"}
-        selectedProvince={selectedProvince}
-        data={provincesOptions}
-        onChange={changeProvince}
-      />
+    <div>
+      <div
+        className={`wrapper grid grid-cols-2 md:grid-cols-5 md:grid-flow-col gap-2 items-center w-full justify-between ${className}`}
+      >
+        {/* Province */}
+        <DropDownFilter
+          type={"province"}
+          data={provinces}
+          onChange={setProvince}
+        />
 
-      {/* city */}
-      <DropDownFilter
-        type={"city"}
-        data={citiesOptions}
-        selectedProvince={selectedProvince}
-        onChange={changeCity}
-      />
+        {/* city */}
+        <DropDownFilter
+          type={"city"}
+          data={cities}
+          selectedProvince={province}
+          onChange={setCity}
+        />
 
-      {/* property type */}
-      <DropDownFilter
-        type={"property type"}
-        data={["House", "Apartment", "Townhouse"]}
-        onChange={changePropertyType}
-      />
+        {/* property type */}
+        <DropDownFilter
+          type={"property type"}
+          data={propertyTypes.filter((type) => type !== "Any")}
+          onChange={setPropertyType}
+        />
 
-      {/* min price */}
-      <DropDownFilter
-        type={"min price"}
-        data={priceOptions}
-        onChange={changeMinPrice}
-      />
+        {/* min price */}
+        <DropDownFilter
+          type={"min price"}
+          data={prices}
+          onChange={setMinPrice}
+        />
 
-      {/* max price */}
-      <DropDownFilter
-        type={"max price"}
-        data={priceOptions}
-        onChange={changeMaxPrice}
-      />
-      <Button className="flex items-center gap-4" onClick={handleSearchClick} type="submit" disabled={loading}>{loading ? (<ThreeDots
-  visible={true}
-  width={80}
+        {/* max price */}
+        <DropDownFilter
+          type={"max price"}
+          data={prices}
+          onChange={setMaxPrice}
+        />
 
-  color="#fff"
-  radius="2"
-  ariaLabel="three-dots-loading"
-  />) : <>Search <FaSearch /></>}</Button>
+      </div>
+        <div className="col-span-2 flex flex-wrap items-center gap-2 pt-2 md:col-span-5">
+          <span className="mr-1 text-sm font-medium text-gray-600">
+            Property type
+          </span>
+          {propertyTypes.map((type) => {
+            const value = type;
+            const isSelected = propertyType === value;
+
+            return (
+              <Button
+                key={type}
+                type="button"
+                variant={isSelected ? "default" : "outline"}
+                className={`h-9 rounded-full px-4 ${isSelected ? "bg-gray-900 text-white hover:bg-gray-800" : "text-gray-600"}`}
+                onClick={() => setPropertyType(value)}
+                aria-pressed={isSelected}
+              >
+                {type === "Any" ? "All" : type}
+              </Button>
+            );
+          })}
+        </div>
     </div>
   );
 }
