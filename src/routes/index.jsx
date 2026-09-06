@@ -11,6 +11,7 @@ import SearchProperties from "@/pages/SearchProperties";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import RootLayout from "@/components/RootLayout";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default [
       {
@@ -55,15 +56,15 @@ export default [
           },
           {
             path: "onboarding",
-            element: <Onboarding />
+            element: <ProtectedRoute><Onboarding /></ProtectedRoute>
           },
           {
             path: "dashboard",
-            element: <Dashboard />
+            element: <ProtectedRoute><Dashboard /></ProtectedRoute>
           },
           {
             path: "dashboard/manage-properties",
-            element: <ManageProperties />
+            element: <ProtectedRoute><ManageProperties /></ProtectedRoute>
           }
         ]
       },

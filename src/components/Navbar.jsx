@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,14 +21,7 @@ const Navbar = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const profile = useAuthStore((state) => state.profile);
   const clear = useAuthStore((state) => state.clear);
-  const fetchProfile = useAuthStore((state) => state.fetchProfile);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!profile) {
-      fetchProfile();
-    }
-  }, [profile]);
 
   const handleSignOut = async () => {
     const { error } = await signOut();

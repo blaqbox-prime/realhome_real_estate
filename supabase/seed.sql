@@ -97,7 +97,7 @@ FROM (
 ) au
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO public.agents (id, profile_id, agency, years_of_experience, created_at, updated_at)
+INSERT INTO public.agents (id, profile_id, agency, years_of_experience, bio, rating, created_at, updated_at)
 SELECT
     gen_random_uuid(),
     p.id,
@@ -114,6 +114,19 @@ SELECT
         ELSE 'Southline Agents'
     END,
     (rn % 12) + 2,
+    CASE
+        WHEN rn % 10 = 0 THEN NULL
+        WHEN rn % 10 = 1 THEN 'Helping families find well-loved homes in established neighbourhoods.'
+        WHEN rn % 10 = 2 THEN 'A property advisor focused on thoughtful service and strong local knowledge.'
+        WHEN rn % 10 = 3 THEN 'Guiding buyers and sellers through confident, straightforward property decisions.'
+        WHEN rn % 10 = 4 THEN 'Specialising in modern homes, practical advice, and smooth negotiations.'
+        WHEN rn % 10 = 5 THEN 'Connecting people with homes that fit their lives, plans, and ambitions.'
+        WHEN rn % 10 = 6 THEN 'An experienced residential specialist with a calm, detail-focused approach.'
+        WHEN rn % 10 = 7 THEN 'Passionate about distinctive homes and making every move feel manageable.'
+        WHEN rn % 10 = 8 THEN 'Local market insight paired with responsive service from first viewing to close.'
+        ELSE 'Dedicated to finding the right property match with care and clear communication.'
+    END,
+    ((rn % 11) / 2.0)::numeric(2,1),
     now(),
     now()
 FROM (

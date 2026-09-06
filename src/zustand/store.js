@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { getSession } from "@/services/authService";
 import { getAgentByProfileId } from "@/services/agentService";
 import { getProfileById } from "@/services/profileService";
 
@@ -13,7 +12,7 @@ export const useFilterStore = create((set) => ({
     followers: 5,
 
     // Functions to update the values
-    changeProvince: (new_province) => set(() => ({province: new_province})),
+    changeProvince: (new_province) => set(() => ({ province: new_province, city: "Any" })),
     changeCity: (new_city) => set(() => ({city: new_city})),
     changePropertyType: (new_type) => set(() => ({propertyType: new_type})),
     changeMinPrice: (new_price) => set(() => ({minPrice: new_price})),
@@ -23,80 +22,51 @@ export const useFilterStore = create((set) => ({
 export const usePropertiesStore = create((set) => ({
     // state variable
     properties: [],
+  loading: false,
+  error: null,
 
     // Functions to update state
-    setProperties: (list_of_properties) => set(() => ({properties: list_of_properties})) 
+  setProperties: (list_of_properties) => set(() => ({ properties: list_of_properties, error: null })),
+  setPropertiesLoading: (loading) => set(() => ({ loading })),
+  setPropertiesError: (error) => set(() => ({ error, loading: false }))
 }) )
 
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
     // state variable
     user: null,
     profile: null,
     agent: null,
+    isHydrated: false,
 
     // Functions to update state (SETTERS)
-    setUser: (user) => {
-        set({ user });
-        localStorage.setItem('user', JSON.stringify(user));
-  },
+    setSession: (session) => set((state) => ({
+      user: session?.user ?? null,
+      profile: state.user?.id === session?.user?.id ? state.profile : null,
+      agent: state.user?.id === session?.user?.id ? state.agent : null,
+    })),
+    setUser: (user) => set({ user }),
+    setProfile: (profile) => set({ profile }),
+    setAgent: (agent) => set({ agent }),
+    setHydrated: (isHydrated) => set({ isHydrated }),
 
-    setProfile: (profile) => {
-    set({ profile: profile });
-    localStorage.setItem('profile', JSON.stringify(profile));
-  },
-  setAgent: (agent) => {
-    set({ agent });
-    localStorage.setItem('agent', JSON.stringify(agent));
-  },
-
-  clear: () => {
-    set({agent: null, user: null, profile: null});
-  },
+    clear: () => set({ agent: null, user: null, profile: null }),
   
-  // Functions to Fetch state (GETTERS)
-  async fetchUser() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
-      set({ user });
-    } else {
-      // Fetch user from Supabase if not found in local storage
-      const { data } = await getSession();
-      if (data.session) {
-        set({ user: data.session.user });
-      }
-    }
+  // Functions to fetch related state
+  async fetchProfile(profileId) {
+    const userId = profileId ?? get().user?.id;
+    if (!userId) return null;
+    const { data: profiles } = await getProfileById(userId);
+    const profile = profiles?.[0] ?? null;
+    set({ profile });
+    return profile;
   },
 
-
-  async fetchProfile() {
-    const profile = JSON.parse(localStorage.getItem('profile')) ?? null;
-    if (profile) {
-      set({ profile });
-    } else {
-      // Fetch profile from Supabase if not found in local storage
-      const { data } = await getSession();
-      if (data.session) {
-        // Get Profile
-        const {data: profiles} = await getProfileById(data.session.user.id);
-        set({ profile: profiles[0] });
-      }
-    }
-  },
-
-  async fetchAgent() {
-    const agent = JSON.parse(localStorage.getItem('agent'));
-    if (agent) {
-      set({ agent });
-    } else {
-      // Fetch agent from Supabase if not found in local storage
-      const { data } = await getSession();
-      if (data.session) {
-        // Get agent
-        const {data: agents} = await getAgentByProfileId(data.session.user.id);
-        set({ agent: agents[0] });
-      }
-    }
+  async fetchAgent(profileId) {
+    const userId = profileId ?? get().user?.id;
+    if (!userId) return;
+    const { data: agents } = await getAgentByProfileId(userId);
+    set({ agent: agents?.[0] ?? null });
   },
 
   

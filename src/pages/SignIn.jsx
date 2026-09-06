@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import CustomInput from "../components/CustomInput";
 import { Link, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { ThreeDots } from "react-loader-spinner";
 // import { useStore } from "zustand";
 import { useAuthStore } from "@/zustand/store";
 import { signIn } from "@/services/authService";
-import { getProfileById } from "@/services/profileService";
 
 function SignIn() {
 
@@ -21,9 +19,7 @@ function SignIn() {
   } = useForm()
 
   const [loading, setLoading] = useState(false)  
-  const setUser = useAuthStore((state) => state.setUser);
-  const setProfile = useAuthStore((state) => state.setProfile);
-  const profile = useAuthStore((state) => state.profile);
+  const setSession = useAuthStore((state) => state.setSession);
   const fetchProfile = useAuthStore((state) => state.fetchProfile);
   const navigate = useNavigate()
 
@@ -39,27 +35,22 @@ function SignIn() {
       return
     }
 
-    setUser(data.session.user)
+    setSession(data.session)
     console.log(data)
 
     const user = data.user;
 
-   try {
-    const { data, error } = await getProfileById(user.id);
-    
-    console.log(data)
+     try {
+      const profile = await fetchProfile(user.id);
 
-    if(data.length == 0){
+      if(!profile){
       setLoading(false)
       navigate('/onboarding')
       return;
     }
-    else {
-      setProfile(data[0])
-    }
 
-  } catch (error) {
-    console.log(error)
+  } catch (profileError) {
+    console.log(profileError)
   }
 
     setLoading(false)
