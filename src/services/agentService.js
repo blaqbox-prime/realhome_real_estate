@@ -1,6 +1,9 @@
 import supabase from '@/lib/supabase'
 
-export const getAgents = () => supabase.from('agents').select('id')
+export const getAgents = () =>
+  supabase
+    .from('agents')
+    .select('*, profiles(*), properties(city, province)')
 
 export const getAgentById = (agentId) =>
   supabase.from('agents').select('*, profiles(*)').eq('id', agentId)
@@ -13,3 +16,4 @@ export const getAgentByProfileId = (profileId) =>
 
 export const saveAgent = (agent) =>
   supabase.from('agents').upsert(agent).select()
+

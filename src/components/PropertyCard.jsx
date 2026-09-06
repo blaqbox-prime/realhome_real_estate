@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { PiBookmarkSimpleBold, PiBookmarkSimpleFill } from "react-icons/pi";
 import { useAuthStore } from "@/zustand/store";
-import { getSession } from "@/services/authService";
 import {
   addFavourite,
   addWishlistItem,
@@ -19,19 +18,7 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
   const [isLiked, setisLiked] = useState(liked);
   const [isWishlisted, setisWishListed] = useState(wishListed);
   const user = useAuthStore((state) => state.user);
-  const fetchUser = useAuthStore((state) => state.fetchUser);
-
   useEffect(() => {
-    const checkUser = async () => {
-      if (!user) {
-        const { data } = await getSession();
-        const { session } = data;
-        if (session) {
-          fetchUser();
-        }
-      }
-    };
-
     const cardEngagements = async () => {
       if (!user) return;
       const { data: liked, error } = await getFavourite(property.id, user.id)
@@ -47,7 +34,6 @@ const PropertyCard = ({ property, liked = false, wishListed = false }) => {
         }
     };
 
-    checkUser();
     cardEngagements()
   }, [user]);
 

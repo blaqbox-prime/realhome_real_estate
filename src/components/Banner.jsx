@@ -26,7 +26,7 @@ function Banner({
       {!isMobile && (<img
         src={image}
         alt="banner Image"
-        className={`hidden sm:block sm:max-w-lg md:max-w-max absolute bottom-0 -right-10 sm:right-0 ${imageStyle}`}
+        className={`hidden sm:block sm:max-w-lg md:max-w-max absolute bottom-0 -right-10 sm:right-0 pointer-events-none ${imageStyle}`}
       />)}
     </div>
   );

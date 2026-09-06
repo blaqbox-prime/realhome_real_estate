@@ -40,14 +40,6 @@ function NewPropertyFormDialog() {
   const [coverImgIndex, setCoverImgIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const agent = useAuthStore((state) => state.agent);
-  const fetchAgent = useAuthStore((state) => state.fetchAgent);
-
-  // Fetch Agent details when page loads
-  useEffect(() => {
-    if (!agent) {
-      fetchAgent();
-    }
-  }, []);
 
   const onSubmit = async (formdata) => {
     setLoading(true);
