@@ -1,17 +1,7 @@
-import PropertyCard from "@/components/PropertyCard";
-import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
-import { IoChevronForward } from "react-icons/io5";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+/* eslint-disable react/prop-types */
 import SectionTitle from "@/components/SectionTitle";
 import PropertiesCarousel from "@/components/PropertiesCarousel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getLatestProperties } from "@/services/propertyService";
 
 
@@ -41,7 +31,8 @@ const PopularListings = ({listings, seeMoreButton = true, className=''}) => {
 
   return (
     <section className={`text-left my-16 ${className}`}>
-    <SectionTitle title="Popular" button={seeMoreButton}/>
+    <SectionTitle title="Popular" button={seeMoreButton} subtitle="Top-Viewed properties this week"/>
+    
       {/* Carousel of Listings */}
       <PropertiesCarousel properties={properties}/>
     </section>
