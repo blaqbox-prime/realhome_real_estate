@@ -1,9 +1,5 @@
 CREATE INDEX idx_agents_agency ON public.agents USING btree (agency);
 
-CREATE INDEX idx_agents_profile_id ON public.agents USING btree (profile_id);
-
-CREATE INDEX idx_favourites_profile_id ON public.favourites USING btree (profile_id);
-
 CREATE INDEX idx_favourites_property_id ON public.favourites USING btree (property_id);
 
 CREATE INDEX idx_profiles_email ON public.profiles USING btree (email);

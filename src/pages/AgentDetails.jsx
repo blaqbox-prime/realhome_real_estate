@@ -83,10 +83,8 @@ function AgentDetails() {
         setAgent(data[0]);
       }
     };
-    if (!agent) {
-      getAgent();
-    }
-  }, [agent, params.id]);
+    getAgent();
+  }, [params.id]);
 
   return (
     <div className="px-1 my-6 text-left page scroll-smooth">
@@ -95,7 +93,7 @@ function AgentDetails() {
           <div className="relative">
             <Avatar className="aspect-square md:h-24 md:w-24 h-14 w-14 border-4 border-gray-800">
               <AvatarImage src={agent?.profiles?.profile_picture} />
-              <AvatarFallback>{`${agent?.profiles?.first_name[0]}${agent?.profiles?.last_name[0]}`}</AvatarFallback>
+              <AvatarFallback>{`${agent?.profiles?.first_name?.[0] ?? ""}${agent?.profiles?.last_name?.[0] ?? ""}`}</AvatarFallback>
             </Avatar>
             <div className="absolute -bottom-1 right-1 h-6 w-6 rounded-full bg-gray-transparent bg-gray-200 flex items-center justify-center text-white text-xs font-semibold">
               <MdVerified className="text-lg mx-auto text-black" />

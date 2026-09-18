@@ -108,7 +108,7 @@ function PropertiesTable({ properties = [], editable=false, className='' }) {
                     <TableCell>{property.city}</TableCell>
                     <TableCell className="text-right w-32">R{formattedNumber(property.price)}</TableCell>
                     {editable == true && <TableCell><FaRegEdit className="scale-125 cursor-pointer" onClick={() => {}} /></TableCell>}
-                    {editable == true && <TableCell><RiDeleteBack2Fill className="text-red-700 scale-125 cursor-pointer" onClick={() => { handleDeleteProperty(property.id); }} /></TableCell>}
+                    {editable == true && <TableCell><button type="button" aria-label={`Delete property ${property.title}`} className="text-red-700 scale-125 cursor-pointer" onClick={() => { handleDeleteProperty(property.id); }}><RiDeleteBack2Fill /></button></TableCell>}
                   </TableRow>
                 ))}
               </TableBody>

@@ -13,9 +13,6 @@ CREATE TABLE IF NOT EXISTS public.agents (
     updated_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_agents_profile_id
-    ON public.agents (profile_id);
-
 CREATE INDEX IF NOT EXISTS idx_agents_agency
     ON public.agents (agency);
 

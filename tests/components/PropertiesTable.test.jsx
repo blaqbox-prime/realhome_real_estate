@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+vi.mock("@/services/propertyService", () => ({ deleteProperty: vi.fn() }));
 import PropertiesTable from "@/components/PropertiesTable";
 
 const properties = [
