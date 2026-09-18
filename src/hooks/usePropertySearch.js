@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ANY_OPTION = "Any";
 
@@ -10,12 +10,28 @@ const getUniqueOptions = (values) => [
   ...new Set(values.filter(Boolean).sort(compareText)),
 ];
 
-function usePropertySearch({ properties = [] } = {}) {
-  const [province, setProvince] = useState(ANY_OPTION);
-  const [city, setCity] = useState(ANY_OPTION);
-  const [propertyType, setPropertyType] = useState(ANY_OPTION);
-  const [minPrice, setMinPrice] = useState(ANY_OPTION);
-  const [maxPrice, setMaxPrice] = useState(ANY_OPTION);
+function usePropertySearch({ properties = [], initialFilters, initialFiltersKey } = {}) {
+  const filters = initialFilters ?? {};
+  const initialProvince = filters.province ?? ANY_OPTION;
+  const initialCity = filters.city ?? ANY_OPTION;
+  const initialPropertyType = filters.propertyType ?? ANY_OPTION;
+  const initialMinPrice = filters.minPrice ?? ANY_OPTION;
+  const initialMaxPrice = filters.maxPrice ?? ANY_OPTION;
+  const [province, setProvinceState] = useState(initialProvince);
+  const [city, setCity] = useState(initialCity);
+  const [propertyType, setPropertyType] = useState(initialPropertyType);
+  const [minPrice, setMinPrice] = useState(initialMinPrice);
+  const [maxPrice, setMaxPrice] = useState(initialMaxPrice);
+  const [hydratedFiltersKey, setHydratedFiltersKey] = useState(initialFiltersKey);
+
+  useEffect(() => {
+    setProvinceState(initialProvince);
+    setCity(initialCity);
+    setPropertyType(initialPropertyType);
+    setMinPrice(initialMinPrice);
+    setMaxPrice(initialMaxPrice);
+    setHydratedFiltersKey(initialFiltersKey);
+  }, [initialCity, initialFiltersKey, initialMaxPrice, initialMinPrice, initialPropertyType, initialProvince]);
 
   const provinces = useMemo(
     () => getUniqueOptions(properties.map((property) => property?.province)),
@@ -78,7 +94,7 @@ function usePropertySearch({ properties = [] } = {}) {
     filteredProperties,
     province,
     setProvince: (value) => {
-      setProvince(value);
+      setProvinceState(value);
       setCity(ANY_OPTION);
     },
     city,
@@ -93,6 +109,7 @@ function usePropertySearch({ properties = [] } = {}) {
     cities,
     propertyTypes,
     prices,
+    isHydrated: hydratedFiltersKey === initialFiltersKey,
   };
 }
 

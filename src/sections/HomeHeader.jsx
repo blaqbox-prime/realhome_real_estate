@@ -2,7 +2,7 @@ import DropDownFilter from "@/components/DropDownFilter";
 import { Button } from "@/components/ui/button";
 import { citiesOptions, priceOptions, provincesOptions } from "@/lib/utils";
 import { useFilterStore } from "@/zustand/store";
-import React, { useState } from "react";
+import { filtersToSearchParams } from "@/lib/propertySearchParams";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import {
@@ -17,8 +17,11 @@ import {
 } from "@/components/ui/drawer";
 
 const HomeHeader = () => {
+  const { province, city, propertyType, minPrice, maxPrice } = useFilterStore();
   const changeProvince = useFilterStore((state) => state.changeProvince);
-  const selectedProvince = useFilterStore((state) => state.province);
+  const changeCity = useFilterStore((state) => state.changeCity);
+  const changeMaxPrice = useFilterStore((state) => state.changeMaxPrice);
+  const searchPath = `/properties?${filtersToSearchParams({ province, city, propertyType, minPrice, maxPrice }).toString()}`;
 
   return (
     <header className="homepage__header rounded-xl after:rounded-xl h-96 grid place-items-center">
@@ -50,7 +53,8 @@ const HomeHeader = () => {
           {/* Province */}
           <DropDownFilter
             type={"province"}
-            selectedProvince={selectedProvince}
+            selectedProvince={province}
+            selectedValue={province}
             data={provincesOptions}
             onChange={changeProvince}
           />
@@ -59,16 +63,18 @@ const HomeHeader = () => {
           <DropDownFilter
             type={"city"}
             data={citiesOptions}
-            selectedProvince={selectedProvince}
+            selectedValue={city}
+            onChange={changeCity}
+            selectedProvince={province}
           />
 
           {/* max price */}
-          <DropDownFilter type={"max price"} data={priceOptions} />
+          <DropDownFilter type={"max price"} data={priceOptions} selectedValue={maxPrice} onChange={changeMaxPrice} />
         </div>
 
           <DrawerFooter>
           <Button className="flex items-center gap-3">
-            <Link to={"/properties"}>Search</Link> <FaSearch />
+            <Link to={searchPath}>Search</Link> <FaSearch />
           </Button>
             <DrawerClose>
               <Button className="w-full" variant="outline">Cancel</Button>
@@ -83,7 +89,8 @@ const HomeHeader = () => {
           {/* Province */}
           <DropDownFilter
             type={"province"}
-            selectedProvince={selectedProvince}
+            selectedProvince={province}
+            selectedValue={province}
             data={provincesOptions}
             onChange={changeProvince}
           />
@@ -92,14 +99,16 @@ const HomeHeader = () => {
           <DropDownFilter
             type={"city"}
             data={citiesOptions}
-            selectedProvince={selectedProvince}
+            selectedProvince={province}
+            selectedValue={city}
+            onChange={changeCity}
           />
 
           {/* max price */}
-          <DropDownFilter type={"max price"} data={priceOptions} />
+          <DropDownFilter type={"max price"} data={priceOptions} selectedValue={maxPrice} onChange={changeMaxPrice} />
 
           <Button className="flex items-center gap-3">
-            <Link to={"/properties"}>Search</Link> <FaSearch />
+            <Link to={searchPath}>Search</Link> <FaSearch />
           </Button>
         </div>
       </div>
