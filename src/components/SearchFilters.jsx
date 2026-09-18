@@ -26,6 +26,7 @@ function SearchFilters({ className = "", searchState }) {
         <DropDownFilter
           type={"province"}
           data={provinces}
+          selectedValue={province}
           onChange={setProvince}
         />
 
@@ -34,6 +35,7 @@ function SearchFilters({ className = "", searchState }) {
           type={"city"}
           data={cities}
           selectedProvince={province}
+          selectedValue={searchState.city}
           onChange={setCity}
         />
 
@@ -41,6 +43,7 @@ function SearchFilters({ className = "", searchState }) {
         <DropDownFilter
           type={"property type"}
           data={propertyTypes.filter((type) => type !== "Any")}
+          selectedValue={propertyType}
           onChange={setPropertyType}
         />
 
@@ -48,6 +51,7 @@ function SearchFilters({ className = "", searchState }) {
         <DropDownFilter
           type={"min price"}
           data={prices}
+          selectedValue={searchState.minPrice}
           onChange={setMinPrice}
         />
 
@@ -55,6 +59,7 @@ function SearchFilters({ className = "", searchState }) {
         <DropDownFilter
           type={"max price"}
           data={prices}
+          selectedValue={searchState.maxPrice}
           onChange={setMaxPrice}
         />
 

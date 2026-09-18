@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import { citiesOptions, cn, formattedNumber } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,7 @@ import { LucideCheck } from 'lucide-react'
 
  
 
-const DropDownFilter = ({data, type, onChange, selectedProvince = "Any"}) => {
+const DropDownFilter = ({data, type, onChange, selectedProvince = "Any", selectedValue}) => {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
    
@@ -35,8 +36,8 @@ const DropDownFilter = ({data, type, onChange, selectedProvince = "Any"}) => {
             aria-expanded={open}
             className="w-full justify-between"
           >
-            {value
-              ? options.find((option) => option === value)
+            {(selectedValue ?? value)
+              ? options.find((option) => option === (selectedValue ?? value))
               : `Select ${type ?? 'Option'}`}
             <RxCaretSort className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -52,8 +53,8 @@ const DropDownFilter = ({data, type, onChange, selectedProvince = "Any"}) => {
                     key={option}
                     value={option}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      onChange(currentValue)
+                      setValue(currentValue === (selectedValue ?? value) ? "" : currentValue);
+                      onChange?.(currentValue)
                       setOpen(false)
                     }}
                   >
