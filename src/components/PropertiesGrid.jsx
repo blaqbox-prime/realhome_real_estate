@@ -9,7 +9,7 @@ function PropertiesGrid({listings = [], className=''}) {
         
         <Pagination
           items={listings}
-          itemsPerPage={16}
+          itemsPerPage={12}
           listClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 md:justify-between"
           ariaLabel="Property pages"
           renderItem={(property) => <PropertyCard property={property} />}

@@ -35,7 +35,7 @@ function ManageProperties() {
     }, []);
 
   return (
-    <main className='text-left'>
+    <main className='text-left page'>
         <div className="heading">
         <h1 className="greeting text-4xl font-bold text-gray-900 mt-4">
         Manage Your <span className="text-gray-400">Properties</span>

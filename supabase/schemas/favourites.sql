@@ -9,9 +9,6 @@ CREATE TABLE IF NOT EXISTS public.favourites (
     UNIQUE (profile_id, property_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_favourites_profile_id
-    ON public.favourites (profile_id);
-
 CREATE INDEX IF NOT EXISTS idx_favourites_property_id
     ON public.favourites (property_id);
 

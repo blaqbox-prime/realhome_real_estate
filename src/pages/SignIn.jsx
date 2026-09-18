@@ -60,15 +60,15 @@ function SignIn() {
   }
 
   return (
-    <div className="SignIn px-8 text-left">
+    <div className="px-8 text-left page flex items-center justify-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="SignIn_form flex flex-col items-center w-full gap-4"
+        className="SignIn_form flex flex-col items-center w-full gap-4 "
       >
         {/* IMAGE */}
         <img src="/assets/logo192.png" alt="logo" className="h-80 pointer-events-none" />
 
-        <div className="grid gap-4 py-4 w-full max-w-80 -mt-10">
+        <div className="grid gap-4 py-4 w-full max-w-[600px] -mt-10">
           {/* New Property Form */}
           <div className="flex flex-col gap-4">
             <Label htmlFor="username" className="text-left">

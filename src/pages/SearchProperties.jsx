@@ -6,15 +6,40 @@ import { listings } from "@/lib/utils";
 import PopularListings from "@/sections/PopularListings";
 import usePropertySearch from "@/hooks/usePropertySearch";
 import { usePropertiesStore } from "@/zustand/store";
-import { useEffect } from "react";
+import { filtersToSearchParams, searchParamsToFilters } from "@/lib/propertySearchParams";
+import { useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function SearchProperties() {
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const properties = usePropertiesStore((state) => state.properties);
-  const propertySearch = usePropertySearch({ properties });
+  const initialFilters = useMemo(
+    () => searchParamsToFilters(new URLSearchParams(location.search)),
+    [location.search],
+  );
+  const propertySearch = usePropertySearch({
+    properties,
+    initialFilters,
+    initialFiltersKey: location.search,
+  });
   const setProperties = usePropertiesStore((state) => state.setProperties)
   const setPropertiesLoading = usePropertiesStore((state) => state.setPropertiesLoading)
   const setPropertiesError = usePropertiesStore((state) => state.setPropertiesError)
+
+  useEffect(() => {
+    if (!propertySearch.isHydrated) return;
+
+    const nextSearch = filtersToSearchParams(propertySearch).toString();
+    const currentSearch = new URLSearchParams(location.search).toString();
+
+    if (nextSearch !== currentSearch) {
+      navigate(
+        { search: nextSearch ? `?${nextSearch}` : "" },
+        { replace: true },
+      );
+    }
+  }, [location.search, navigate, propertySearch, propertySearch.isHydrated]);
 
   useEffect(() => {
     const loadProperties = async () => {

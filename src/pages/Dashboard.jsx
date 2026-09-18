@@ -66,7 +66,7 @@ function Dashboard() {
         <h1 className="greeting text-4xl font-bold text-gray-900 mt-4">
           {`${greeting()}`} <span className="text-gray-400">{profile ? profile.first_name : "User"}</span>
         </h1>
-        <p className="text-gray-400 text-sm">
+        <p className="text-gray-400 text-sm mt-2">
           Find the next best property for your portfolio.
         </p>
       </div>
